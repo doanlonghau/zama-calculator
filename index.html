@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bảng tính điểm social</title>
   <style>
-    :root { --bg:#0a0a06; --card:#12100a; --muted:#beb38a; --text:#fff7d6; --accent:#ffd84d; --good:#7bd88a; --warn:#ffcc00; --bad:#ff7a7a; --border:#3a300f; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px }
+    :root { --bg:#0a0a06; --card:#12100a; --muted:#beb38a; --text:#fff7d6; --accent:#ffd84d; --good:#7bd88a; --warn:#ffcc00; --bad:#ff7a7a; --border:#ffd208; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px }
     *{ box-sizing:border-box }
     body{ margin:0; background:radial-gradient(1200px 600px at 20% -10%, #1f1900 0%, transparent 60%), linear-gradient(180deg,#0a0a06,#0a0a06); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial; padding:24px; letter-spacing:.2px }
     h1,h2,h3{ margin:0 0 12px } h1{ font-size:24px } h2{ font-size:18px; color:var(--muted) }
@@ -45,7 +45,7 @@
 
     <header class="grid two">
       <div class="card">
-        <h1>Luật tính điểm</h1>
+        <h1> Thông số tài khoản</h1>
         <div class="muted">Nhập thông số chung, thêm các link và xem điểm chi tiết, tổng điểm</div>
       </div>
       <div class="card grid three">
@@ -58,7 +58,7 @@
           <div id="totalScore" class="mono" style="font-size:22px">0</div>
         </div>
         <div>
-          <div class="muted">xếp hạng so với ss2</div>
+          <div class="muted">Xếp hạng so với Season 2</div>
           <div id="rankVsSS2" class="mono" style="font-size:22px">đang khởi tạo…</div>
         </div>
       </div>
@@ -112,7 +112,7 @@
 
     <section class="card">
       <h2>So với Season 2</h2>
-      <div class="muted" style="margin-bottom:8px">Dữ liệu ss2 đã nhúng. Công cụ ước lượng hạng dựa trên ngưỡng Top 100, 200, 300, 500.</div>
+      <div class="muted" style="margin-bottom:8px">Dữ liệu mùa 2 đã được nhúng sẵn. Công cụ ước lượng hạng dựa trên ngưỡng Top 100, 200, 300, 500.</div>
       <div id="ss2stats" class="muted"></div>
     </section>
 
