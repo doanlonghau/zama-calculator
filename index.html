@@ -5,64 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bảng tính điểm social</title>
   <style>
-    :root {
-      --bg: #0a0a06;
-      --card: #12100a;
-      --muted: #beb38a;
-      --text: #fff7d6;
-      --accent: #ffd84d;
-      --good: #7bd88a;
-      --warn: #ffcc00;
-      --bad: #ff7a7a;
-      --border: #3a300f;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 16px;
-    }
-    * { box-sizing: border-box }
-    body { margin:0; background: radial-gradient(1200px 600px at 20% -10%, #1f1900 0%, transparent 60%), linear-gradient(180deg, #0a0a06, #0a0a06);
-      color: var(--text); font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial; padding: 24px; letter-spacing:.2px }
-    h1, h2, h3 { margin: 0 0 12px }
-    h1 { font-size: 24px }
-    h2 { font-size: 18px; color: var(--muted) }
-    .wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 16px }
-    .grid { display: grid; gap: 16px }
-    .two { grid-template-columns: repeat(2, minmax(0,1fr)) }
-    .three { grid-template-columns: repeat(3, minmax(0,1fr)) }
-
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px }
-    .muted { color: var(--muted) }
-    .row { display: grid; grid-template-columns: 180px 1fr; gap: 10px; align-items: center; margin: 10px 0 }
-    label { font-weight: 600 }
-    input[type="number"], input[type="text"] { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: #191407; color: var(--text); outline: none; box-shadow: inset 0 1px 0 rgba(255,255,255,.03) }
-    input[type="number"]:focus, input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,216,77,.15) }
-
-    .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #1a1407; color: var(--text); padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600 }
-    .btn:hover { background: #221a09 }
-    .btn.primary { background: linear-gradient(135deg, #ffdb58, #ffd84d); color: #3a2f00; border: none }
-    .btn.primary:hover { filter: brightness(1.03) }
-    .btn.ghost { background: transparent }
-
-    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; border: 1px solid var(--border) }
-    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border) }
-    th { background: #1c1606; color: var(--muted); font-weight: 700; position: sticky; top: 0; z-index: 1 }
-    tr:hover td { background: rgba(255, 216, 77, .06) }
-    td input { width: 100% }
-
-    .pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700 }
-    .pill.good { background: rgba(123,216,138,.14); color: #9af0ac }
-    .pill.warn { background: rgba(255,204,0,.14); color: var(--warn) }
-    .pill.bad  { background: rgba(255,122,122,.14); color: var(--bad) }
-
-    .right { text-align: right }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace }
-
-    .footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 8px }
-
-    @media (max-width: 880px) { .two { grid-template-columns: 1fr } .row { grid-template-columns: 1fr } }
+    :root { --bg:#0a0a06; --card:#12100a; --muted:#beb38a; --text:#fff7d6; --accent:#ffd84d; --good:#7bd88a; --warn:#ffcc00; --bad:#ff7a7a; --border:#3a300f; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px }
+    *{ box-sizing:border-box }
+    body{ margin:0; background:radial-gradient(1200px 600px at 20% -10%, #1f1900 0%, transparent 60%), linear-gradient(180deg,#0a0a06,#0a0a06); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial; padding:24px; letter-spacing:.2px }
+    h1,h2,h3{ margin:0 0 12px } h1{ font-size:24px } h2{ font-size:18px; color:var(--muted) }
+    .wrap{ max-width:1100px; margin:0 auto; display:grid; gap:16px }
+    .grid{ display:grid; gap:16px } .two{ grid-template-columns:repeat(2,minmax(0,1fr)) } .three{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px }
+    .muted{ color:var(--muted) }
+    .row{ display:grid; grid-template-columns:180px 1fr; gap:10px; align-items:center; margin:10px 0 }
+    label{ font-weight:600 }
+    input[type="number"],input[type="text"],textarea{ width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#191407; color:var(--text); outline:none; box-shadow:inset 0 1px 0 rgba(255,255,255,.03) }
+    input[type="number"]:focus,input[type="text"]:focus,textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,216,77,.15) }
+    .btn{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:#1a1407; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600 }
+    .btn:hover{ background:#221a09 } .btn.primary{ background:linear-gradient(135deg,#ffdb58,#ffd84d); color:#3a2f00; border:none } .btn.primary:hover{ filter:brightness(1.03) } .btn.ghost{ background:transparent }
+    table{ width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px; border:1px solid var(--border) }
+    th,td{ padding:10px 8px; text-align:left; border-bottom:1px solid var(--border) } th{ background:#1c1606; color:var(--muted); font-weight:700; position:sticky; top:0; z-index:1 }
+    tr:hover td{ background:rgba(255,216,77,.06) } td input{ width:100% }
+    .pill{ display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700 }
+    .pill.good{ background:rgba(123,216,138,.14); color:#9af0ac } .pill.warn{ background:rgba(255,204,0,.14); color:var(--warn) } .pill.bad{ background:rgba(255,122,122,.14); color:var(--bad) }
+    .right{ text-align:right } .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,Liberation Mono,monospace }
+    .footer{ color:var(--muted); font-size:12px; text-align:center; margin-top:8px }
+    .intro{ display:flex; align-items:center; gap:12px; justify-content:center; background:#1a1407; padding:12px; border-radius:12px; border:1px solid var(--border); box-shadow:var(--shadow) }
+    .intro img{ height:40px }
+    @media (max-width:880px){ .two{ grid-template-columns:1fr } .row{ grid-template-columns:1fr } }
   </style>
 </head>
 <body>
   <div class="wrap">
+    <!-- banner giới thiệu đặt ngay đầu body -->
+    <div class="intro">
+      <img src="https://cdn.prod.website-files.com/61bc21e3a843412266a08eb3/68417dce00c33fce2253fc6e_Untitled%20design%20(1).svg" alt="logo" />
+      <div>
+        <b>Tool này được làm bởi Long Hậu.</b> Dữ liệu chỉ có giá trị tham khảo.<br>
+        Follow <a href="https://x.com/doanlonghau" target="_blank" style="color:var(--accent)">@doanlonghau</a> ·
+        <a href="https://x.com/cryptoluaga" target="_blank" style="color:var(--accent)">@cryptoluaga</a>
+      </div>
+    </div>
+
     <header class="grid two">
       <div class="card">
         <h1>Luật tính điểm</h1>
@@ -86,22 +66,10 @@
 
     <section class="card">
       <h2>Thông số chung</h2>
-      <div class="row">
-        <label for="followers">Followers</label>
-        <input id="followers" type="number" min="0" step="1" value="0" />
-      </div>
-      <div class="row">
-        <label for="smartFollowers">Smart followers</label>
-        <input id="smartFollowers" type="number" min="0" step="1" value="0" />
-      </div>
-      <div class="row">
-        <label for="posts">Số bài đăng</label>
-        <input id="posts" type="number" min="0" step="1" value="0" />
-      </div>
-      <div class="row">
-        <label>Hệ số chung</label>
-        <div class="muted mono" id="derivedGlobals">SF 0, postMult 1.00</div>
-      </div>
+      <div class="row"><label for="followers">Followers</label><input id="followers" type="number" min="0" step="1" value="0" /></div>
+      <div class="row"><label for="smartFollowers">Smart followers</label><input id="smartFollowers" type="number" min="0" step="1" value="0" /></div>
+      <div class="row"><label for="posts">Số bài đăng</label><input id="posts" type="number" min="0" step="1" value="0" /></div>
+      <div class="row"><label>Hệ số chung</label><div class="muted mono" id="derivedGlobals">SF 0, postMult 1.00</div></div>
     </section>
 
     <section class="card">
@@ -144,111 +112,7 @@
 
     <section class="card">
       <h2>So với Season 2</h2>
-      <div class="muted" style="margin-bottom:8px"><table>
-<tr><th>rank</th><th>điểm</th></tr>
-<tr><td>1</td><td>2147.56</td></tr>
-<tr><td>2</td><td>1900.46</td></tr>
-<tr><td>3</td><td>1856.10</td></tr>
-<tr><td>4</td><td>1748.14</td></tr>
-<tr><td>5</td><td>1444.73</td></tr>
-<tr><td>6</td><td>1076.67</td></tr>
-<tr><td>7</td><td>1059.67</td></tr>
-<tr><td>8</td><td>987.35</td></tr>
-<tr><td>9</td><td>893.58</td></tr>
-<tr><td>10</td><td>857.62</td></tr>
-<tr><td>11</td><td>856.41</td></tr>
-<tr><td>12</td><td>834.68</td></tr>
-<tr><td>13</td><td>809.41</td></tr>
-<tr><td>14</td><td>732.54</td></tr>
-<tr><td>15</td><td>708.88</td></tr>
-<tr><td>16</td><td>700.44</td></tr>
-<tr><td>17</td><td>663.03</td></tr>
-<tr><td>18</td><td>658.67</td></tr>
-<tr><td>19</td><td>627.14</td></tr>
-<tr><td>20</td><td>626.35</td></tr>
-<tr><td>21</td><td>594.84</td></tr>
-<tr><td>22</td><td>576.91</td></tr>
-<tr><td>23</td><td>547.90</td></tr>
-<tr><td>24</td><td>537.46</td></tr>
-<tr><td>25</td><td>532.23</td></tr>
-<tr><td>26</td><td>531.39</td></tr>
-<tr><td>27</td><td>527.10</td></tr>
-<tr><td>28</td><td>525.73</td></tr>
-<tr><td>29</td><td>523.21</td></tr>
-<tr><td>30</td><td>521.89</td></tr>
-<tr><td>31</td><td>517.19</td></tr>
-<tr><td>32</td><td>509.09</td></tr>
-<tr><td>33</td><td>502.61</td></tr>
-<tr><td>34</td><td>486.58</td></tr>
-<tr><td>35</td><td>482.95</td></tr>
-<tr><td>36</td><td>477.95</td></tr>
-<tr><td>37</td><td>465.14</td></tr>
-<tr><td>38</td><td>459.23</td></tr>
-<tr><td>39</td><td>449.30</td></tr>
-<tr><td>40</td><td>433.73</td></tr>
-<tr><td>41</td><td>409.11</td></tr>
-<tr><td>42</td><td>404.88</td></tr>
-<tr><td>43</td><td>404.31</td></tr>
-<tr><td>44</td><td>401.76</td></tr>
-<tr><td>45</td><td>394.52</td></tr>
-<tr><td>46</td><td>394.12</td></tr>
-<tr><td>47</td><td>387.57</td></tr>
-<tr><td>48</td><td>383.16</td></tr>
-<tr><td>49</td><td>375.44</td></tr>
-<tr><td>50</td><td>371.47</td></tr>
-<tr><td>51</td><td>369.04</td></tr>
-<tr><td>52</td><td>362.61</td></tr>
-<tr><td>53</td><td>362.51</td></tr>
-<tr><td>54</td><td>356.50</td></tr>
-<tr><td>55</td><td>355.02</td></tr>
-<tr><td>56</td><td>350.98</td></tr>
-<tr><td>57</td><td>350.26</td></tr>
-<tr><td>58</td><td>344.38</td></tr>
-<tr><td>59</td><td>339.12</td></tr>
-<tr><td>60</td><td>339.05</td></tr>
-<tr><td>61</td><td>338.72</td></tr>
-<tr><td>62</td><td>337.23</td></tr>
-<tr><td>63</td><td>335.77</td></tr>
-<tr><td>64</td><td>328.35</td></tr>
-<tr><td>65</td><td>319.43</td></tr>
-<tr><td>66</td><td>314.87</td></tr>
-<tr><td>67</td><td>314.28</td></tr>
-<tr><td>68</td><td>307.18</td></tr>
-<tr><td>69</td><td>306.36</td></tr>
-<tr><td>70</td><td>305.32</td></tr>
-<tr><td>71</td><td>300.38</td></tr>
-<tr><td>72</td><td>297.20</td></tr>
-<tr><td>73</td><td>291.75</td></tr>
-<tr><td>74</td><td>291.72</td></tr>
-<tr><td>75</td><td>290.02</td></tr>
-<tr><td>76</td><td>289.25</td></tr>
-<tr><td>77</td><td>288.40</td></tr>
-<tr><td>78</td><td>287.92</td></tr>
-<tr><td>79</td><td>284.64</td></tr>
-<tr><td>80</td><td>272.88</td></tr>
-<tr><td>81</td><td>271.03</td></tr>
-<tr><td>82</td><td>268.31</td></tr>
-<tr><td>83</td><td>268.21</td></tr>
-<tr><td>84</td><td>264.30</td></tr>
-<tr><td>85</td><td>261.01</td></tr>
-<tr><td>86</td><td>259.13</td></tr>
-<tr><td>87</td><td>255.79</td></tr>
-<tr><td>88</td><td>255.31</td></tr>
-<tr><td>89</td><td>254.66</td></tr>
-<tr><td>90</td><td>253.30</td></tr>
-<tr><td>91</td><td>252.23</td></tr>
-<tr><td>92</td><td>249.23</td></tr>
-<tr><td>93</td><td>246.66</td></tr>
-<tr><td>94</td><td>245.02</td></tr>
-<tr><td>95</td><td>244.34</td></tr>
-<tr><td>96</td><td>243.25</td></tr>
-<tr><td>97</td><td>241.72</td></tr>
-<tr><td>98</td><td>241.37</td></tr>
-<tr><td>99</td><td>238.01</td></tr>
-<tr><td>100</td><td>237.82</td></tr>
-<tr><td>101</td><td></td></tr>
-<tr><td>500</td><td></td></tr>
-</table></div>
+      <div class="muted" style="margin-bottom:8px">Dữ liệu ss2 đã nhúng. Công cụ ước lượng hạng dựa trên ngưỡng Top 100, 200, 300, 500.</div>
       <div id="ss2stats" class="muted"></div>
     </section>
 
@@ -256,154 +120,49 @@
   </div>
 
   <script>
-    // dữ liệu Season 2 nhúng trực tiếp: chỉ cần ngưỡng xếp hạng để so sánh nhanh
-    const SS2_THRESH = { n: 500, p100: 11260, p200: 7013, p300: 4694, p500: 2897, max: 65476, min: 2897 };
+    // ngưỡng Season 2 nhúng sẵn
+    const SS2_THRESH = { n:500, p100:11260, p200:7013, p300:4694, p500:2897, max:65476, min:2897 };
 
     const els = {
-      followers: document.getElementById('followers'),
-      smartFollowers: document.getElementById('smartFollowers'),
-      posts: document.getElementById('posts'),
-      derivedGlobals: document.getElementById('derivedGlobals'),
-      addRow: document.getElementById('addRow'),
-      calcAll: document.getElementById('calcAll'),
-      clearAll: document.getElementById('clearAll'),
-      table: document.getElementById('linksTable').querySelector('tbody'),
-      sumScore: document.getElementById('sumScore'),
-      totalScore: document.getElementById('totalScore'),
-      postCountStat: document.getElementById('postCountStat'),
-      rankVsSS2: document.getElementById('rankVsSS2'),
-      ss2stats: document.getElementById('ss2stats'),
+      followers: document.getElementById('followers'), smartFollowers: document.getElementById('smartFollowers'), posts: document.getElementById('posts'),
+      derivedGlobals: document.getElementById('derivedGlobals'), addRow: document.getElementById('addRow'), calcAll: document.getElementById('calcAll'), clearAll: document.getElementById('clearAll'),
+      table: document.getElementById('linksTable').querySelector('tbody'), sumScore: document.getElementById('sumScore'), totalScore: document.getElementById('totalScore'), postCountStat: document.getElementById('postCountStat'), rankVsSS2: document.getElementById('rankVsSS2'), ss2stats: document.getElementById('ss2stats'),
     };
 
-    function fmt(x, d=2) { if (!isFinite(x)) return '0'; return Number(x).toLocaleString('vi-VN', { maximumFractionDigits: d, minimumFractionDigits: 0 }); }
+    function fmt(x,d=2){ if(!isFinite(x)) return '0'; return Number(x).toLocaleString('vi-VN',{maximumFractionDigits:d, minimumFractionDigits:0}); }
 
-    function globals() {
-      const followers = Math.max(0, +els.followers.value || 0);
-      const smartFollowers = Math.max(0, +els.smartFollowers.value || 0);
-      const posts = Math.max(0, +els.posts.value || 0);
-      const SF = Math.min(Math.log10(smartFollowers + 1), 3.0);
-      const postMult = 1 + 0.02 * Math.min(posts, 20);
-      els.derivedGlobals.textContent = `SF ${SF.toFixed(3)}, postMult ${postMult.toFixed(2)}`;
-      els.postCountStat.textContent = fmt(posts);
-      return { followers, smartFollowers, posts, SF, postMult };
-    }
+    function globals(){ const followers=Math.max(0,+els.followers.value||0); const smartFollowers=Math.max(0,+els.smartFollowers.value||0); const posts=Math.max(0,+els.posts.value||0); const SF=Math.min(Math.log10(smartFollowers+1),3.0); const postMult=1+0.02*Math.min(posts,20); els.derivedGlobals.textContent=`SF ${SF.toFixed(3)}, postMult ${postMult.toFixed(2)}`; els.postCountStat.textContent=fmt(posts); return {followers, smartFollowers, posts, SF, postMult}; }
 
-    function computeRow(row, g) {
-      const read = name => { const el = row.querySelector(`[name=${name}]`); return +el.value || 0; };
-      const impressions = Math.max(0, read('impressions'));
-      const likes = Math.max(0, read('likes'));
-      const rts = Math.max(0, read('retweets'));
-      const quotes = Math.max(0, read('quotes'));
-      const sengIn = Math.max(0, read('seng'));
-
-      const SRM = Math.min(1, impressions / 100000);
-      const qW = 4 + 2 * SRM;
-      const ENG = likes + 3 * rts + qW * quotes;
-      const ERpct = impressions > 0 ? (likes + rts + quotes) / impressions * 100 : 0;
-      const EngObs = Math.max(ENG, (ERpct / 100) * impressions);
-      const ER_cap = 0.01 + 0.04 * SRM;
-      const EffEng = Math.min(EngObs, impressions * ER_cap);
-      const Clamp = EngObs > 0 ? EffEng / EngObs : 0;
-      const SENG = Math.min(sengIn, 0.5 * EffEng);
-      const QE = Math.min(Math.log(1 + impressions / Math.max(g.followers, 1)), 2.0) * SRM;
-      const IMP = Math.sqrt(impressions);
-      const erMult = Math.min(0.90 + 2 * Math.min(ERpct / 100, 0.05), 1.0);
-      const engageBlock = (((ENG * 0.7) * Clamp) + (SENG * 150)) * Math.pow(SRM, 1.5);
-      const baseScore = (g.SF * 500) + (IMP * 10) + engageBlock + (QE * 120);
-      let finalScore = baseScore * erMult * g.postMult;
-
-      const ERobs = impressions > 0 ? (EngObs / impressions) * 100 : 0;
-      let status = '';
-      let eligible = true;
-      if (ERobs > 20) { finalScore = 0; status = 'DQ ER quan sát > 20%'; eligible = false; }
-      if (ERpct > 10 && impressions < 50000) { finalScore *= 0.30; status = status ? status + ' + phạt 0.30' : 'Phạt 0.30'; }
-      if (g.posts < 2 || impressions <= 0) { eligible = false; status = status ? status + ' + không đủ điều kiện' : 'Không đủ điều kiện'; }
-
-      row.querySelector('[data-erpct]').textContent = ERpct ? ERpct.toFixed(2) : '0.00';
-      row.querySelector('[data-srm]').textContent = SRM.toFixed(3);
-      row.querySelector('[data-score]').textContent = fmt(finalScore, 2);
-      const badge = row.querySelector('[data-status]');
-      badge.textContent = status || 'Ok';
-      badge.className = 'pill ' + (status.includes('DQ') ? 'bad' : status ? 'warn' : 'good');
-
+    function computeRow(row,g){ const read=n=>{const el=row.querySelector(`[name=${n}]`); return +el.value||0;}; const impressions=Math.max(0,read('impressions')); const likes=Math.max(0,read('likes')); const rts=Math.max(0,read('retweets')); const quotes=Math.max(0,read('quotes')); const sengIn=Math.max(0,read('seng'));
+      const SRM=Math.min(1, impressions/100000); const qW=4+2*SRM; const ENG=likes+3*rts+qW*quotes; const ERpct=impressions>0 ? (likes+rts+quotes)/impressions*100:0; const EngObs=Math.max(ENG,(ERpct/100)*impressions); const ER_cap=0.01+0.04*SRM; const EffEng=Math.min(EngObs, impressions*ER_cap); const Clamp=EngObs>0? EffEng/EngObs:0; const SENG=Math.min(sengIn, 0.5*EffEng); const QE=Math.min(Math.log(1+ impressions/Math.max(g.followers,1)),2.0)*SRM; const IMP=Math.sqrt(impressions); const erMult=Math.min(0.90+2*Math.min(ERpct/100,0.05),1.0); const engageBlock=(((ENG*0.7)*Clamp)+(SENG*150))*Math.pow(SRM,1.5); const baseScore=(g.SF*500)+(IMP*10)+engageBlock+(QE*120); let finalScore=baseScore*erMult*g.postMult;
+      const ERobs=impressions>0?(EngObs/impressions)*100:0; let status=''; let eligible=true; if(ERobs>20){ finalScore=0; status='DQ ER quan sát > 20%'; eligible=false; } if(ERpct>10 && impressions<50000){ finalScore*=0.30; status=status? status+' + phạt 0.30':'Phạt 0.30'; } if(g.posts<2 || impressions<=0){ eligible=false; status=status? status+' + không đủ điều kiện':'Không đủ điều kiện'; }
+      row.querySelector('[data-erpct]').textContent=ERpct? ERpct.toFixed(2):'0.00'; row.querySelector('[data-srm]').textContent=SRM.toFixed(3); row.querySelector('[data-score]').textContent=fmt(finalScore,2); const badge=row.querySelector('[data-status]'); badge.textContent=status||'Ok'; badge.className='pill '+(status.includes('DQ')?'bad': status? 'warn':'good');
       return { finalScore, eligible };
     }
 
-    function recalc() {
-      const g = globals();
-      let sumScore = 0, totalScore = 0;
-      els.table.querySelectorAll('tr').forEach(row => {
-        const { finalScore, eligible } = computeRow(row, g);
-        totalScore += finalScore;
-        if (eligible) { sumScore += finalScore; }
-      });
-      els.sumScore.textContent = fmt(sumScore, 2);
-      els.totalScore.textContent = fmt(totalScore, 2);
-      updateRank(sumScore);
-    }
+    function recalc(){ const g=globals(); let sumScore=0, totalScore=0; els.table.querySelectorAll('tr').forEach(row=>{ const {finalScore, eligible}=computeRow(row,g); totalScore+=finalScore; if(eligible) sumScore+=finalScore; }); els.sumScore.textContent=fmt(sumScore,2); els.totalScore.textContent=fmt(totalScore,2); updateRank(sumScore); }
 
-    // ước lượng hạng theo các ngưỡng đã biết bằng nội suy tuyến tính từng đoạn
-    function estimateRank(score) {
-      const t = SS2_THRESH;
-      if (score >= t.max) return 1;
-      if (score <= t.min) return t.n;
-      const segments = [
-        {r0: 1,    r1: 100, s0: t.max, s1: t.p100},
-        {r0: 100,  r1: 200, s0: t.p100, s1: t.p200},
-        {r0: 200,  r1: 300, s0: t.p200, s1: t.p300},
-        {r0: 300,  r1: 500, s0: t.p300, s1: t.p500},
-      ];
-      for (const seg of segments) {
-        if (score >= seg.s1) {
-          const ratio = (seg.s0 - score) / (seg.s0 - seg.s1);
-          const rank = Math.floor(seg.r0 + ratio * (seg.r1 - seg.r0));
-          return Math.max(seg.r0, Math.min(seg.r1, rank));
-        }
-      }
-      return t.n;
-    }
+    function estimateRank(score){ const t=SS2_THRESH; if(score>=t.max) return 1; if(score<=t.min) return t.n; const segs=[ {r0:1,r1:100,s0:t.max,s1:t.p100}, {r0:100,r1:200,s0:t.p100,s1:t.p200}, {r0:200,r1:300,s0:t.p200,s1:t.p300}, {r0:300,r1:500,s0:t.p300,s1:t.p500} ]; for(const seg of segs){ if(score>=seg.s1){ const ratio=(seg.s0-score)/(seg.s0-seg.s1); const rank=Math.floor(seg.r0+ ratio*(seg.r1-seg.r0)); return Math.max(seg.r0, Math.min(seg.r1, rank)); } } return t.n; }
 
-    function updateRank(my) {
-      const t = SS2_THRESH;
-      const rank = estimateRank(my);
-      const within = rank <= t.n ? `#${rank}/${t.n}` : `ngoài Top ${t.n}`;
-      els.rankVsSS2.textContent = within;
-      els.ss2stats.innerHTML = `
-        <div>Điểm của bạn: <b class="mono">${fmt(my,2)}</b></div>
-        <div>Ngưỡng Top 100: <span class="mono">${fmt(t.p100)}</span> | Top 200: <span class="mono">${fmt(t.p200)}</span> | Top 300: <span class="mono">${fmt(t.p300)}</span> | Top 500: <span class="mono">${fmt(t.p500)}</span></div>
-      `;
-    }
+    function updateRank(my){ const t=SS2_THRESH; const rank=estimateRank(my); const within=rank<=t.n? `#${rank}/${t.n}`:`ngoài Top ${t.n}`; els.rankVsSS2.textContent=within; els.ss2stats.innerHTML=`<div>Điểm của bạn: <b class="mono">${fmt(my,2)}</b></div><div>Ngưỡng Top 100: <span class="mono">${fmt(t.p100)}</span> | Top 200: <span class="mono">${fmt(t.p200)}</span> | Top 300: <span class="mono">${fmt(t.p300)}</span> | Top 500: <span class="mono">${fmt(t.p500)}</span></div>`; }
 
-    function addRow(prefill={}) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input name="url" type="text" placeholder="https://..." value="${prefill.url||''}"></td>
-        <td class="right"><input name="impressions" type="number" min="0" step="1" value="${prefill.impressions||0}"></td>
-        <td class="right"><input name="likes" type="number" min="0" step="1" value="${prefill.likes||0}"></td>
-        <td class="right"><input name="retweets" type="number" min="0" step="1" value="${prefill.retweets||0}"></td>
-        <td class="right"><input name="quotes" type="number" min="0" step="1" value="${prefill.quotes||0}"></td>
-        <td class="right"><input name="seng" type="number" min="0" step="0.01" value="${prefill.seng||0}"></td>
-        <td class="right mono" data-erpct>0.00</td>
-        <td class="right mono" data-srm>0.000</td>
-        <td class="right mono" data-score>0</td>
-        <td><span class="pill good" data-status>Ok</span></td>
-        <td><button class="btn ghost" data-del>Xóa</button></td>
-      `;
-      els.table.appendChild(tr);
-      tr.querySelectorAll('input').forEach(i => i.addEventListener('input', recalc));
-      tr.querySelector('[data-del]').addEventListener('click', () => { tr.remove(); recalc(); });
-      recalc();
-    }
+    function addRow(prefill={}){ const tr=document.createElement('tr'); tr.innerHTML=`
+      <td><input name="url" type="text" placeholder="https://..." value="${prefill.url||''}"></td>
+      <td class="right"><input name="impressions" type="number" min="0" step="1" value="${prefill.impressions||0}"></td>
+      <td class="right"><input name="likes" type="number" min="0" step="1" value="${prefill.likes||0}"></td>
+      <td class="right"><input name="retweets" type="number" min="0" step="1" value="${prefill.retweets||0}"></td>
+      <td class="right"><input name="quotes" type="number" min="0" step="1" value="${prefill.quotes||0}"></td>
+      <td class="right"><input name="seng" type="number" min="0" step="0.01" value="${prefill.seng||0}"></td>
+      <td class="right mono" data-erpct>0.00</td>
+      <td class="right mono" data-srm>0.000</td>
+      <td class="right mono" data-score>0</td>
+      <td><span class="pill good" data-status>Ok</span></td>
+      <td><button class="btn ghost" data-del>Xóa</button></td>`; els.table.appendChild(tr); tr.querySelectorAll('input').forEach(i=>i.addEventListener('input', recalc)); tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); }); recalc(); }
 
-    els.followers.addEventListener('input', recalc);
-    els.smartFollowers.addEventListener('input', recalc);
-    els.posts.addEventListener('input', recalc);
-    els.addRow.addEventListener('click', () => addRow());
-    els.calcAll.addEventListener('click', recalc);
-    els.clearAll.addEventListener('click', () => { els.table.innerHTML = ''; recalc(); });
+    els.followers.addEventListener('input', recalc); els.smartFollowers.addEventListener('input', recalc); els.posts.addEventListener('input', recalc);
+    els.addRow.addEventListener('click', ()=>addRow()); els.calcAll.addEventListener('click', recalc); els.clearAll.addEventListener('click', ()=>{ els.table.innerHTML=''; recalc(); });
 
-    addRow();
-    updateRank(0);
+    addRow(); updateRank(0);
   </script>
 </body>
 </html>
