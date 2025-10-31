@@ -33,7 +33,7 @@
   table{width:100%; border-collapse:collapse; font-size:.95rem; table-layout:fixed}
   th,td{border-bottom:1px dashed rgba(244,194,13,.25); padding:8px 6px; text-align:left; vertical-align:middle}
   th{color:#ffe27a; position:sticky; top:0; background:rgba(15,15,15,.8); backdrop-filter: blur(6px)}
-  #linksTable th:nth-child(1), #linksTable td:nth-child(1){width:36%}
+  #linksTable th:nth-child(1), #linksTable td:nth-child(1){width:25%}
   #linksTable th:nth-child(2), #linksTable td:nth-child(2){width:10%}
   #linksTable th:nth-child(3), #linksTable td:nth-child(3){width:9%}
   #linksTable th:nth-child(4), #linksTable td:nth-child(4){width:9%}
@@ -42,6 +42,28 @@
   #linksTable th:nth-child(7), #linksTable td:nth-child(7){width:8%}
   #linksTable th:nth-child(8), #linksTable td:nth-child(8){width:7%}
   #linksTable th:nth-child(9), #linksTable td:nth-child(9){width:4%}
+  /* input trong bảng chiếm đủ ô và không tràn viền */
+#linksTable input,
+#linksTable select {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  min-height: 34px;       /* cho dễ bấm */
+  line-height: 1.2;
+}
+
+/* giữ khoảng cách giữa nội dung và viền ô một chút thoáng hơn */
+#linksTable td { padding: 10px 8px; }
+
+/* tùy chọn ẩn nút tăng giảm của input number nếu thấy chật */
+#linksTable input[type=number]::-webkit-outer-spin-button,
+#linksTable input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#linksTable input[type=number] {
+  -moz-appearance: textfield;
+}
   .mono{font-family:var(--mono)}
   .pill{display:inline-block; padding:4px 8px; border-radius:999px; font-size:.8rem; border:1px solid rgba(255,255,255,.1)}
   .pill.good{background:rgba(106,211,106,.12); border-color:rgba(106,211,106,.4)}
