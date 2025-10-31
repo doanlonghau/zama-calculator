@@ -7,6 +7,68 @@
 </head>
 <body>
   <h1>Leaderboard Calculator</h1>
-  <p>Đây là placeholder. Dán toàn bộ mã HTML chi tiết ở bước trước vào file này.</p>
+ <!-- thêm vào ngay dưới nút Tính điểm -->
+<div class="flex gap-3 pt-2">
+  <button type="button" id="loginBtn" class="rounded-xl px-4 py-2 bg-black text-white">Đăng nhập X</button>
+  <button type="button" id="fetchBtn" class="rounded-xl px-4 py-2 bg-neutral-700 text-white">Lấy bài có @Zama_FHE và #ZamaCreatorProgram</button>
+</div>
+
+<!-- bảng kết quả import -->
+<section class="mt-6">
+  <h2 class="text-xl font-semibold">Bài đã lấy</h2>
+  <div class="text-sm text-slate-500">Từ ngày đầu tháng hiện tại</div>
+  <div class="mt-3 overflow-x-auto">
+    <table id="tweetsTable" class="min-w-full text-sm">
+      <thead><tr class="text-left">
+        <th class="pr-4">ngày</th>
+        <th class="pr-4">id</th>
+        <th class="pr-4">impr</th>
+        <th class="pr-4">like</th>
+        <th class="pr-4">rt</th>
+        <th class="pr-4">quote</th>
+        <th class="pr-4">reply</th>
+        <th class="pr-4">điểm</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+<script>
+// helper gọi api serverless
+async function api(path) {
+  const r = await fetch(path, { credentials: 'include' });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+$('loginBtn').addEventListener('click', () => {
+  location.href = '/api/auth/start';
+});
+$('fetchBtn').addEventListener('click', async () => {
+  const data = await api('/api/x/my-tagged');
+  const tbody = document.querySelector('#tweetsTable tbody');
+  tbody.innerHTML = '';
+  for (const t of data.tweets) {
+    // ánh xạ sang form, tính điểm từng bài
+    $('impressions').value = t.metrics.impression_count ?? 0;
+    $('likes').value = t.metrics.like_count ?? 0;
+    $('retweets').value = t.metrics.retweet_count ?? 0;
+    $('quotes').value = t.metrics.quote_count ?? 0;
+    // giữ followers, smart_* và posts theo người dùng tự nhập
+    const out = calcAndRender();
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="pr-4">${new Date(t.created_at).toLocaleString()}</td>
+      <td class="pr-4"><a class="underline" target="_blank" href="https://x.com/${data.me.username}/status/${t.id}">${t.id}</a></td>
+      <td class="pr-4">${t.metrics.impression_count ?? 0}</td>
+      <td class="pr-4">${t.metrics.like_count}</td>
+      <td class="pr-4">${t.metrics.retweet_count}</td>
+      <td class="pr-4">${t.metrics.quote_count}</td>
+      <td class="pr-4">${t.metrics.reply_count}</td>
+      <td class="pr-4 font-mono">${new Intl.NumberFormat('vi-VN').format(out.finalScore)}</td>`;
+    tbody.appendChild(tr);
+  }
+});
+</script>
+
 </body>
 </html>
