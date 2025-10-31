@@ -9,10 +9,10 @@
     --bg:#0b0b0b; --card:#151515; --fg:#f7f7f7; --muted:#c8c8c8; --accent:#f4c20d; --accent2:#ffda3a;
     --bad:#ff5a5a; --warn:#ffb84d; --good:#6ad36a; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   }
-  html,body{background:var(--bg); color:var(--fg); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
-  .wrap{max-width:1100px; margin:30px auto; padding:0 16px}
+  html,body{background:var(--bg); color:var(--fg); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0}
+  .wrap{max-width:none; width:100%; margin:0 auto; padding:16px}
   header{display:flex; gap:14px; align-items:center; margin-bottom:8px}
-  header img{width:42px; height:42px}
+  header img{width:auto; height:42px; padding-right: 50px}
   h1{font-size:1.9rem; margin:0}
   .muted{color:var(--muted)}
   .card{background:linear-gradient(180deg, rgba(244,194,13,.12), rgba(244,194,13,.05)); border:1px solid rgba(244,194,13,.25); border-radius:16px; padding:16px; margin:14px 0; box-shadow: 0 0 0 1px rgba(244,194,13,.08) inset}
@@ -23,16 +23,25 @@
   label{color:#ffe27a}
   input, select{background:#0f0f0f; color:var(--fg); border:1px solid rgba(244,194,13,.35); padding:10px 12px; border-radius:10px; outline:none}
   input:focus{box-shadow:0 0 0 2px rgba(255,218,58,.35)}
-  .btn{background:#1a1a1a; border:1px solid rgba(244,194,13,.6); color:#000; color:#272100; padding:10px 14px; border-radius:12px; cursor:pointer}
+  .btn{background:#1a1a1a; border:1px solid rgba(244,194,13,.6); color:#fff; padding:10px 14px; border-radius:12px; cursor:pointer}
   .btn.primary{background:var(--accent2); color:#000; font-weight:700}
   .btn:disabled{opacity:.55; cursor:not-allowed}
   .right{display:flex; gap:8px; align-items:center}
   .lang{display:flex; gap:6px}
   .lang button{background:transparent; border:1px solid rgba(244,194,13,.4); color:var(--fg); padding:6px 10px; border-radius:10px; cursor:pointer}
   .lang button.active{background:var(--accent2); color:#000; border-color:var(--accent2)}
-  table{width:100%; border-collapse:collapse; font-size:.95rem}
-  th,td{border-bottom:1px dashed rgba(244,194,13,.25); padding:8px 6px; text-align:left}
+  table{width:100%; border-collapse:collapse; font-size:.95rem; table-layout:fixed}
+  th,td{border-bottom:1px dashed rgba(244,194,13,.25); padding:8px 6px; text-align:left; vertical-align:middle}
   th{color:#ffe27a; position:sticky; top:0; background:rgba(15,15,15,.8); backdrop-filter: blur(6px)}
+  #linksTable th:nth-child(1), #linksTable td:nth-child(1){width:36%}
+  #linksTable th:nth-child(2), #linksTable td:nth-child(2){width:10%}
+  #linksTable th:nth-child(3), #linksTable td:nth-child(3){width:9%}
+  #linksTable th:nth-child(4), #linksTable td:nth-child(4){width:9%}
+  #linksTable th:nth-child(5), #linksTable td:nth-child(5){width:9%}
+  #linksTable th:nth-child(6), #linksTable td:nth-child(6){width:8%}
+  #linksTable th:nth-child(7), #linksTable td:nth-child(7){width:8%}
+  #linksTable th:nth-child(8), #linksTable td:nth-child(8){width:7%}
+  #linksTable th:nth-child(9), #linksTable td:nth-child(9){width:4%}
   .mono{font-family:var(--mono)}
   .pill{display:inline-block; padding:4px 8px; border-radius:999px; font-size:.8rem; border:1px solid rgba(255,255,255,.1)}
   .pill.good{background:rgba(106,211,106,.12); border-color:rgba(106,211,106,.4)}
@@ -42,6 +51,13 @@
   .note{font-size:.9rem}
   a.link{color:var(--accent); text-decoration:none}
   a.link:hover{text-decoration:underline}
+  .table-wrap{overflow:auto; max-height:calc(100vh - 420px); border:1px solid rgba(244,194,13,.25); border-radius:10px}
+  @media(max-width:900px){ .table-wrap{max-height:unset} }
+  .hide{display:none !important}
+  /* bảng gates */
+  .gates{width:auto; border-collapse:separate; border-spacing:0; margin-top:8px}
+  .gates th,.gates td{border:1px solid rgba(244,194,13,.35); padding:6px 10px; white-space:nowrap}
+  .gates th{background:rgba(244,194,13,.08); color:#ffe27a; position:static}
 </style>
 </head>
 <body>
@@ -67,7 +83,7 @@
       <a class="link" href="https://x.com/cryptoluaga" target="_blank" rel="noopener">@cryptoluaga</a>
     </div>
 
-    <section class="card" aria-labelledby="statsHeader">
+    <section class="card">
       <div class="grid two">
         <div>
           <div style="display:flex; gap:10px; align-items:center">
@@ -102,13 +118,15 @@
 
     <section class="card">
       <h2 id="linksHeader">Posts</h2>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin:6px 0">
-        <button class="btn" id="addRow">Add row</button>
-        <button class="btn" id="calcAll">Recalculate</button>
-        <button class="btn" id="clearAll">Clear</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:6px 0">
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" id="addRow">Add row</button>
+          <button class="btn" id="calcAll">Recalculate</button>
+          <button class="btn" id="clearAll">Clear</button>
+        </div>
         <div class="muted">sum <span id="sumScore" class="mono">0</span> · <span id="sumLabel">eligible total</span></div>
       </div>
-      <div style="overflow:auto; max-height:420px; border:1px solid rgba(244,194,13,.25); border-radius:10px">
+      <div class="table-wrap">
         <table id="linksTable" aria-label="Post table"><thead></thead><tbody></tbody></table>
       </div>
     </section>
@@ -124,20 +142,22 @@
             <button id="xLogoutBtn" class="btn" style="display:none">Sign out</button>
             <span id="xAuthStatus" class="muted">Not connected</span>
           </div>
-          <div class="row">
-            <label id="xEstimateLabel" for="xEstimate">assumed ER percent</label>
+          <!-- Ẩn label và hint theo yêu cầu nhưng vẫn giữ input để code hoạt động -->
+          <div class="row hide">
+            <label id="xEstimateLabel" for="xEstimate">hidden</label>
             <input id="xEstimate" type="number" min="0.1" max="20" step="0.1" value="2.5" />
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap; margin:8px 0">
             <button id="xFetchBtn" class="btn" disabled>Fetch latest</button>
             <button id="xMoreBtn" class="btn" disabled>Load more</button>
           </div>
-          <div class="muted" id="xApiHint">Impressions are not public in most apps. When missing, impressions are estimated as (likes + retweets + quotes) divided by ER percent</div>
+          <div class="muted hide" id="xApiHint">hidden</div>
         </div>
-        <div>
-          <div class="muted" style="margin-bottom:6px" id="xScopeTitle">Required scopes</div>
-          <ul id="xScopeList" class="muted" style="margin:0 0 8px 18px"><li>tweet.read</li><li>users.read</li><li>offline.access</li></ul>
-          <div class="muted" id="xApiStatus">Ready</div>
+        <!-- Ẩn hoàn toàn phần scopes và trạng thái -->
+        <div class="hide">
+          <div class="muted" style="margin-bottom:6px" id="xScopeTitle">hidden</div>
+          <ul id="xScopeList" class="muted" style="margin:0 0 8px 18px"></ul>
+          <div class="muted" id="xApiStatus">hidden</div>
         </div>
       </div>
     </section>
@@ -149,8 +169,14 @@
 
     <section class="card">
       <h2 id="ss2Header">Season 2 comparison</h2>
-      <div id="ss2Desc" class="muted" style="margin-bottom:6px">Embedded S2 thresholds from the published leaderboard. Estimated rank against top 100 200 300 500</div>
+      <div id="ss2Desc" class="muted" style="margin-bottom:6px">Estimated rank against top 100 200 300 500</div>
       <div id="ss2stats" class="note"></div>
+      <table class="gates" aria-label="S2 gates">
+        <tr><th>Top 100</th><td class="mono">11,260</td></tr>
+        <tr><th>Top 200</th><td class="mono">7,013</td></tr>
+        <tr><th>Top 300</th><td class="mono">4,761</td></tr>
+        <tr><th>Top 500</th><td class="mono">2,897</td></tr>
+      </table>
     </section>
 
     <footer class="muted" id="footerText">No data is transmitted</footer>
@@ -158,6 +184,7 @@
 
 <script>
   const $ = sel => document.querySelector(sel);
+
   const I18N = {
     en:{
       intro:"Tool by Long Hậu. Data is for reference. Follow <a href=https://x.com/doanlonghau target=_blank class=link rel=noopener>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank class=link rel=noopener>@cryptoluaga</a>",
@@ -165,54 +192,51 @@
       subtitle:"Enter global metrics, add post URLs, review per post and total scores",
       statPosts:"posts", statTotal:"total score", statRank:"rank vs season 2",
       globalsHeader:"Global parameters", followers:"followers", smartFollowers:"smart followers", posts:"number of posts", derived:"derived metrics",
-      linksHeader:"Posts", addLink:"Add row", calcAll:"Recalculate", clearAll:"Clear", th:["URL","Impr","Likes","RT","Quotes","Smart eng","ER percent","SRM","Score","Status",""], sumLabel:"eligible total",
+      linksHeader:"Posts", addLink:"Add row", calcAll:"Recalculate", clearAll:"Clear",
+      th:["URL","Impr","Likes","RT","Quotes","ER percent","SRM","Score","Status",""], sumLabel:"eligible total",
       xHeader:"Connect X and import posts", xDesc:"Pull posts that mention @zama_fhe or #ZamaCreatorProgram. Client side only",
       xSignIn:"Sign in with X", xSignOut:"Sign out", xAuthReady:"Not connected", xAuthBusy:"Opening X login…", xAuthOk:h=>`Connected ${h}`, xAuthFail:"Login failed",
-      xEstimateLabel:"Assumed ER percent to estimate impressions when views are missing", xFetchBtn:"Fetch latest", xMoreBtn:"Load more", xApiHint:"Impressions are not public. Estimated from ER percent", xScopeTitle:"Required scopes", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Ready",
       tipsHeader:"Improvement tips",
       tips:{
-        postMore:"Increase number of posts up to 20 to gain the post multiplier",
-        raiseImpr:"Raise impressions to improve SRM",
-        avoidPenalty:"If ER percent is above 10 and impressions are below 50000 then grow reach to avoid the 0.30 penalty",
+        postMore:"Post up to 20 to gain the post multiplier",
+        raiseImpr:"Aim near 100000 impressions per post to improve SRM",
+        avoidPenalty:"If ER percent is above 10 and impressions are below 50000 then increase reach to avoid the 0.30 penalty",
         lowerERspikes:"Avoid abnormal ER spikes",
-        boostSmart:"Increase smart engagement and smart followers to improve SENG and SF",
         improveER:"Average ER percent is low. Improve hooks CTA visuals timing",
         balanceMix:"Likes dominate. Encourage retweets and quotes because they weigh more",
         growQE:"Impressions per follower are low. Reach beyond followers to improve QE",
         dqWarn:"Some posts are disqualified due to observed ER above 20. Recheck data"
       },
-      ss2Header:"Season 2 comparison", ss2Desc:"Embedded S2 thresholds. Estimated rank for top 100 200 300 500", youScore:"your score", gates:"gates", top:n=>`Top ${n}`,
+      ss2Header:"Season 2 comparison", ss2Desc:"Estimated rank for top 100 200 300 500", youScore:"your score", gates:"gates", top:n=>`Top ${n}`,
       statusOK:"Eligible", statusDQ:"Disqualified observed ER above 20 percent", statusPenalty:"Penalty 0.30", statusIneligible:"Ineligible", footer:"No data is transmitted"
     },
     vi:{
-      intro:"Công cụ do Long Hậu thực hiện. Dữ liệu chỉ mang tính tham khảo. Follow <a href=https://x.com/doanlonghau target=_blank class=link rel=noopener>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank class=link rel=noopener>@cryptoluaga</a>",
-      title:"Bộ tính điểm chương trình Zama",
-      subtitle:"Nhập thông số chung, thêm URL bài viết, xem điểm từng bài và tổng điểm",
-      statPosts:"bài đăng", statTotal:"tổng điểm", statRank:"xếp hạng so với season 2",
-      globalsHeader:"Thông số chung", followers:"Followers", smartFollowers:"Smart followers", posts:"Số bài đăng", derived:"Suy ra",
-      linksHeader:"Danh sách bài", addLink:"Thêm dòng", calcAll:"Tính lại", clearAll:"Xóa", th:["URL","Impr","Likes","RT","Quotes","Smart eng","ER phần trăm","SRM","Score","Trạng thái",""], sumLabel:"tổng đủ điều kiện",
-      xHeader:"Kết nối X và nhập bài", xDesc:"Lọc bài có @zama_fhe hoặc #ZamaCreatorProgram. Xử lý trên trình duyệt",
-      xSignIn:"Đăng nhập X", xSignOut:"Đăng xuất", xAuthReady:"Chưa kết nối", xAuthBusy:"Đang mở đăng nhập X…", xAuthOk:h=>`Đã kết nối ${h}`, xAuthFail:"Đăng nhập không thành công",
-      xEstimateLabel:"Giả định ER phần trăm để ước tính impressions khi thiếu view", xFetchBtn:"Tải mới", xMoreBtn:"Tải thêm", xApiHint:"API công khai thường không có impressions. Sẽ ước tính theo ER phần trăm", xScopeTitle:"Phạm vi cần thiết", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Sẵn sàng",
+      intro:"Công cụ do Long Hậu thực hiện. Dữ liệu chỉ tham khảo. Follow <a href=https://x.com/doanlonghau target=_blank class=link rel=noopener>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank class=link rel=noopener>@cryptoluaga</a>",
+      title:"Bộ tính điểm Zama",
+      subtitle:"Nhập số liệu chung, dán link bài, xem điểm từng bài và tổng",
+      statPosts:"bài", statTotal:"tổng điểm", statRank:"xếp hạng so với season 2",
+      globalsHeader:"Thông số chung", followers:"follower", smartFollowers:"follower chất lượng", posts:"số bài", derived:"chỉ số tính thêm",
+      linksHeader:"Bài viết", addLink:"Thêm dòng", calcAll:"Tính lại", clearAll:"Xóa",
+      th:["URL","Impr","Like","RT","Quote","ER phần trăm","SRM","Điểm","Trạng thái",""], sumLabel:"tổng đủ điều kiện",
+      xHeader:"Kết nối X và nhập bài", xDesc:"Lọc bài có @zama_fhe hoặc #ZamaCreatorProgram. Chạy trên trình duyệt",
+      xSignIn:"Đăng nhập X", xSignOut:"Đăng xuất", xAuthReady:"Chưa kết nối", xAuthBusy:"Đang mở đăng nhập X…", xAuthOk:h=>`Đã kết nối ${h}`, xAuthFail:"Đăng nhập lỗi",
       tipsHeader:"Gợi ý cải thiện",
       tips:{
-        postMore:"Tăng số bài đến ít nhất 20 để hưởng post multiplier",
-        raiseImpr:"Đẩy impressions nhưng mỗi bài cần dưới 100000 để cải thiện SRM",
-        avoidPenalty:"Nếu ER phần trăm trên 10 và impressions dưới 50000 thì tăng reach để tránh mức phạt 0.30",
-        lowerERspikes:"Tránh đột biến ER bất thường",
-        boostSmart:"Tăng smart engagement và smart followers để cải thiện SENG và SF",
-        improveER:"ER phần trăm trung bình thấp. Cải thiện hook CTA hình ảnh và khung giờ",
-        balanceMix:"Likes đang chiếm đa số. Khuyến khích retweet và quote vì trọng số cao hơn",
-        growQE:"Impressions trên mỗi follower thấp. Mở rộng reach ngoài tệp follower để cải thiện QE",
-        dqWarn:"Một số bài bị loại do ER quan sát trên 20. Kiểm tra lại dữ liệu"
+        postMore:"Đăng tối đa 20 bài để hưởng hệ số bài",
+        raiseImpr:"Cố gắng gần 100000 impressions mỗi bài để tăng SRM",
+        avoidPenalty:"Nếu ER trên 10 và impressions dưới 50000 thì tăng reach để tránh phạt 0.30",
+        lowerERspikes:"Tránh ER tăng đột biến",
+        improveER:"ER trung bình thấp. Cải thiện hook CTA hình ảnh và giờ đăng",
+        balanceMix:"Like đang chiếm nhiều. Khuyến khích retweet và quote vì trọng số cao",
+        growQE:"Impressions trên mỗi follower thấp. Mở rộng reach ngoài tệp follower",
+        dqWarn:"Có bài bị loại vì ER quan sát trên 20. Kiểm tra lại"
       },
-      ss2Header:"So với Season 2", ss2Desc:"Dữ liệu Season đã được nạp. Ước lượng hạng ở các mốc top 100 200 300 500", youScore:"Điểm của bạn", gates:"ngang với", top:n=>`Top ${n}`,
-      statusOK:"Đủ điều kiện", statusDQ:"Loại do ER quan sát trên 20 phần trăm", statusPenalty:"Phạt 0.30", statusIneligible:"Không đủ điều kiện", footer:"Không thu thập dữ liệu"
+      ss2Header:"So với season 2", ss2Desc:"Ước lượng hạng ở mốc top 100 200 300 500", youScore:"điểm của bạn", gates:"ngưỡng", top:n=>`Top ${n}`,
+      statusOK:"Đủ điều kiện", statusDQ:"Loại vì ER quan sát trên 20 phần trăm", statusPenalty:"Phạt 0.30", statusIneligible:"Không đủ điều kiện", footer:"Không gửi dữ liệu ra ngoài"
     }
   };
   let LANG = 'en';
 
-  // gates derived from provided S2 sheet (approximate)
   const SS2 = { n:500, p100:11260, p200:7013, p300:4761, p500:2897 };
 
   function fmt(x, d=0){ if(!isFinite(x)) return '0'; return (+x).toLocaleString(undefined,{maximumFractionDigits:d, minimumFractionDigits:d}); }
@@ -226,9 +250,6 @@
     $('#linksHeader').textContent = t.linksHeader; $('#addRow').textContent = t.addLink; $('#calcAll').textContent = t.calcAll; $('#clearAll').textContent = t.clearAll; $('#sumLabel').textContent = t.sumLabel;
     $('#xHeader').textContent = t.xHeader; $('#xDesc').textContent = t.xDesc;
     $('#xLoginBtn').textContent = t.xSignIn; $('#xLogoutBtn').textContent = t.xSignOut; $('#xAuthStatus').textContent = t.xAuthReady;
-    $('#xEstimateLabel').textContent = t.xEstimateLabel; $('#xFetchBtn').textContent = t.xFetchBtn; $('#xMoreBtn').textContent = t.xMoreBtn; $('#xApiHint').textContent = t.xApiHint; $('#xScopeTitle').textContent = t.xScopeTitle; $('#xScopeList').innerHTML = t.xScopeList.map(s=>`<li>${s}</li>`).join(''); $('#xApiStatus').textContent = t.xApiStatus;
-    $('#tipsHeader').textContent = t.tipsHeader;
-    $('#ss2Header').textContent = t.ss2Header; $('#ss2Desc').textContent = t.ss2Desc; $('#footerText').textContent = t.footer;
     document.documentElement.lang = LANG === 'vi' ? 'vi' : 'en';
     $('#btnEN').classList.toggle('active', LANG==='en'); $('#btnVI').classList.toggle('active', LANG==='vi');
     $('#btnEN').setAttribute('aria-selected', LANG==='en' ? 'true' : 'false');
@@ -261,7 +282,6 @@
       <td><input name=likes type=number min=0 value=${obj?.likes||0} aria-label="likes"></td>
       <td><input name=retweets type=number min=0 value=${obj?.retweets||0} aria-label="retweets"></td>
       <td><input name=quotes type=number min=0 value=${obj?.quotes||0} aria-label="quotes"></td>
-      <td><input name=seng type=number min=0 value=${obj?.smart_engagement||0} aria-label="smart engagement"></td>
       <td class=mono data-erpct>0.00</td>
       <td class=mono data-srm>0.000</td>
       <td class=mono data-score>0</td>
@@ -279,7 +299,7 @@
     const likes = Math.max(0, read('likes'));
     const rts = Math.max(0, read('retweets'));
     const quotes = Math.max(0, read('quotes'));
-    const sengIn = Math.max(0, read('seng'));
+    const sengIn = 0;
 
     const SRM = Math.min(1, impressions/100000);
     const qW = 4 + 2*SRM;
@@ -317,29 +337,18 @@
 
   function recalc(){
     const g = globals();
-    let sumScore = 0, totalScore = 0, rows=0, totImpr=0, sumER=0, sumSRM=0, sumSENGshare=0, sumLikeShare=0, sumSpreadShare=0, penalizedCount=0, dqCount=0;
+    let sumScore = 0, totalScore = 0, rows=0, totImpr=0, sumER=0, sumSRM=0, sumLikeShare=0, sumSpreadShare=0, penalizedCount=0, dqCount=0;
     $('#linksTable tbody').querySelectorAll('tr').forEach(row=>{
       const r = computeRow(row, g); rows++;
       totalScore += r.finalScore; if(r.eligible) sumScore += r.finalScore;
-      totImpr += r.impressions; sumER += r.ERpct; sumSRM += r.SRM; sumLikeShare += r.likeShare; sumSpreadShare += r.spreadShare; const denom = r.EffEng>0 ? 0.5*r.EffEng : 0; if(denom>0) sumSENGshare += Math.min(r.SENG/denom,1); if(r.penalized) penalizedCount++; if(r.dq) dqCount++;
+      totImpr += r.impressions; sumER += r.ERpct; sumSRM += r.SRM; sumLikeShare += r.likeShare; sumSpreadShare += r.spreadShare;
+      if(r.penalized) penalizedCount++; if(r.dq) dqCount++;
     });
     $('#sumScore').textContent = fmt(sumScore,2); $('#totalScore').textContent = fmt(totalScore,2); $('#statPostsVal').textContent = rows;
 
     const rank = estimateRank(sumScore); $('#rankVsSS2').textContent = rank<=SS2.n ? `#${rank}/${SS2.n}` : `>${SS2.n}`;
     const t = I18N[LANG];
-    $('#ss2stats').innerHTML = `${t.youScore}: <b class=mono>${fmt(sumScore,2)}</b> · ${t.gates}: ${t.top(100)} <span class=mono>${fmt(SS2.p100)}</span> | ${t.top(200)} <span class=mono>${fmt(SS2.p200)}</span> | ${t.top(300)} <span class=mono>${fmt(SS2.p300)}</span> | ${t.top(500)} <span class=mono>${fmt(SS2.p500)}</span>`;
-
-    const tips = [];
-    const avgER = rows? sumER/rows : 0; const avgSRM = rows? sumSRM/rows : 0; const avgLike = rows? sumLikeShare/rows : 0; const avgSpread = rows? sumSpreadShare/rows : 0; const avgSENGshare = rows? sumSENGshare/rows : 0; const gFollowers = Math.max(1, +$('#followers').value||1);
-    if((+$('#posts').value||0) < 20) tips.push(t.tips.postMore);
-    if(avgSRM < 1) tips.push(t.tips.raiseImpr);
-    if(penalizedCount>0) tips.push(t.tips.avoidPenalty);
-    if(dqCount>0) tips.push(t.tips.dqWarn);
-    if(avgER < 1) tips.push(t.tips.improveER);
-    if(avgLike > 0.7 && avgSpread < 0.3) tips.push(t.tips.balanceMix);
-    if(avgSENGshare < 0.5) tips.push(t.tips.boostSmart);
-    if(totImpr/gFollowers < 1) tips.push(t.tips.growQE);
-    $('#tipsBox').innerHTML = tips.length ? `<ul>${tips.map(s=>`<li>${s}</li>`).join('')}</ul>` : '<i>No tips. Metrics look balanced</i>';
+    $('#ss2stats').innerHTML = `${t.youScore}: <b class=mono>${fmt(sumScore,2)}</b>`;
   }
 
   function estimateRank(score){
@@ -365,7 +374,7 @@
   async function sha256(str){ const enc = new TextEncoder().encode(str); return await crypto.subtle.digest('SHA-256', enc); }
   function rnd(n=32){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
 
-  const OAUTH = { // fill these three to go live
+  const OAUTH = {
     authorizeBase:'https://twitter.com/i/oauth2/authorize',
     tokenProxy:'https://YOUR-WORKER.workers.dev/x/oauth/token',
     clientId:'YOUR_X_CLIENT_ID',
@@ -399,17 +408,19 @@
   function xLogout(){ X_ACCESS_TOKEN=null; X_REFRESH_TOKEN=null; X_HANDLE=null; $('#xAuthStatus').textContent=I18N[LANG].xAuthReady; $('#xLoginBtn').style.display=''; $('#xLogoutBtn').style.display='none'; $('#xFetchBtn').disabled=true; $('#xMoreBtn').disabled=true; }
 
   async function xFetch(query, nextToken){
-    const estER = Math.max(0.1, +$('#xEstimate').value || 2.5); const status=$('#xApiStatus'); if(!X_ACCESS_TOKEN){ status.textContent = I18N[LANG].xAuthReady; return; }
+    const estERInput = $('#xEstimate');
+    const estER = estERInput ? Math.max(0.1, +estERInput.value || 2.5) : 2.5;
+    const status=$('#xApiStatus'); // có thể null do bị ẩn
+    if(!X_ACCESS_TOKEN){ if(status) status.textContent = I18N[LANG].xAuthReady; return; }
     const params = new URLSearchParams({ query, 'tweet.fields':'public_metrics,created_at,entities', expansions:'author_id', 'user.fields':'username,public_metrics', max_results:'50' }); if(nextToken) params.set('next_token', nextToken);
-    status.textContent = 'Fetching…';
     try{
       const resp = await fetch('https://api.twitter.com/2/tweets/search/recent?' + params.toString(), { headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` } });
-      if(!resp.ok){ const txt = await resp.text(); status.textContent = `HTTP ${resp.status} ${txt.slice(0,160)}`; return; }
+      if(!resp.ok){ return; }
       const data = await resp.json(); const usersById = new Map((data.includes?.users||[]).map(u=>[u.id,u]));
-      const items = (data.data||[]).map(tw=>{ const u=usersById.get(tw.author_id); const username=u?.username||'x'; const url=`https://x.com/${username}/status/${tw.id}`; const pm=tw.public_metrics||{}; const likes=pm.like_count||0, retweets=pm.retweet_count||0, quotes=pm.quote_count||0; const engagements = likes+retweets+quotes; const impressions = engagements>0 ? Math.round(engagements/(estER/100)) : 0; return { url, impressions, likes, retweets, quotes, smart_engagement:0 }; });
+      const items = (data.data||[]).map(tw=>{ const u=usersById.get(tw.author_id); const username=u?.username||'x'; const url=`https://x.com/${username}/status/${tw.id}`; const pm=tw.public_metrics||{}; const likes=pm.like_count||0, retweets=pm.retweet_count||0, quotes=pm.quote_count||0; const engagements = likes+retweets+quotes; const impressions = engagements>0 ? Math.round(engagements/(estER/100)) : 0; return { url, impressions, likes, retweets, quotes }; });
       if(items.length) rowsFromObjects(items);
-      X_NEXT_TOKEN = data.meta?.next_token||null; $('#xMoreBtn').disabled = !X_NEXT_TOKEN; status.textContent = `${data.meta?.result_count||0} tweets · next ${X_NEXT_TOKEN?'yes':'no'}`;
-    }catch(e){ status.textContent = 'Network or CORS error'; }
+      X_NEXT_TOKEN = data.meta?.next_token||null; $('#xMoreBtn').disabled = !X_NEXT_TOKEN;
+    }catch(e){ /* bỏ qua lỗi hiển thị vì đã ẩn status */ }
   }
 
   $('#xLoginBtn').addEventListener('click', xStartLogin);
@@ -417,7 +428,6 @@
   $('#xFetchBtn').addEventListener('click', ()=>{ X_NEXT_TOKEN=null; xFetch('(@zama_fhe OR #ZamaCreatorProgram) -is:reply', null); });
   $('#xMoreBtn').addEventListener('click', ()=>{ if(X_NEXT_TOKEN) xFetch('(@zama_fhe OR #ZamaCreatorProgram) -is:reply', X_NEXT_TOKEN); });
 
-  // init
   renderStatic(); buildThead(); addRow(); recalc(); xHandleCallback();
 </script>
 </body>
