@@ -40,29 +40,34 @@
   .pill.bad{background:rgba(255,90,90,.12); border-color:rgba(255,90,90,.45)}
   footer{margin:20px 0; color:var(--muted); font-size:.9rem}
   .note{font-size:.9rem}
+  a.link{color:var(--accent); text-decoration:none}
+  a.link:hover{text-decoration:underline}
 </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <img src="https://cdn.prod.website-files.com/61bc21e3a843412266a08eb3/68417dce00c33fce2253fc6e_Untitled%20design%20(1).svg" alt="logo" />
+      <img src="https://github.com/doanlonghau/zama-calculator/blob/main/Zama_idDz0xiVMe_0.png?raw=true" alt="Zama logo" />
       <div>
-        <h1 id="title">Zama Creator Program Point Calculator</h1>
-        <div id="subtitle" class="muted">Enter globals, add post links, see per post and total scores</div>
+        <h1 id="title">Zama creator program score calculator</h1>
+        <div id="subtitle" class="muted">Enter global metrics, add post URLs, review per post and total scores</div>
       </div>
       <div class="right" style="margin-left:auto">
-        <div class="lang">
-          <button id="btnEN" class="active">English</button>
-          <button id="btnVI">Tiếng Việt</button>
+        <div class="lang" role="tablist" aria-label="Language">
+          <button id="btnEN" class="active" role="tab" aria-selected="true">English</button>
+          <button id="btnVI" role="tab" aria-selected="false">Tiếng Việt</button>
         </div>
       </div>
     </header>
 
     <div class="muted" id="introText">
-      Tool by Long Hậu, data for reference only. Follow <a href="https://x.com/doanlonghau" target="_blank" style="color:var(--accent)">@doanlonghau</a> · <a href="https://x.com/cryptoluaga" target="_blank" style="color:var(--accent)">@cryptoluaga</a>
+      Tool by Long Hậu. Data is for reference. Follow
+      <a class="link" href="https://x.com/doanlonghau" target="_blank" rel="noopener">@doanlonghau</a>
+      ·
+      <a class="link" href="https://x.com/cryptoluaga" target="_blank" rel="noopener">@cryptoluaga</a>
     </div>
 
-    <section class="card">
+    <section class="card" aria-labelledby="statsHeader">
       <div class="grid two">
         <div>
           <div style="display:flex; gap:10px; align-items:center">
@@ -82,13 +87,13 @@
         <div>
           <div class="row"><label id="lblFollowers" for="followers">followers</label><input id="followers" type="number" min="0" value="0" /></div>
           <div class="row"><label id="lblSmartFollowers" for="smartFollowers">smart followers</label><input id="smartFollowers" type="number" min="0" value="0" /></div>
-          <div class="row"><label id="lblPosts" for="posts">post count</label><input id="posts" type="number" min="0" value="0" /></div>
+          <div class="row"><label id="lblPosts" for="posts">number of posts</label><input id="posts" type="number" min="0" value="0" /></div>
         </div>
         <div>
-          <div class="row"><label id="lblDerived">derived</label>
+          <div class="row"><label id="lblDerived">derived metrics</label>
             <div>
-              <div class="muted note">SRM uses per row impressions, SF uses smart followers</div>
-              <div class="note">SF <span class="mono" id="sfVal">0.00</span> · postMult <span class="mono" id="postMultVal">1.00</span></div>
+              <div class="muted note">SRM uses per row impressions. SF uses smart followers</div>
+              <div class="note">SF <span class="mono" id="sfVal">0.00</span> · post mult <span class="mono" id="postMultVal">1.00</span></div>
             </div>
           </div>
         </div>
@@ -96,20 +101,20 @@
     </section>
 
     <section class="card">
-      <h2 id="linksHeader">Post links</h2>
+      <h2 id="linksHeader">Posts</h2>
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin:6px 0">
-        <button class="btn" id="addRow">Add</button>
+        <button class="btn" id="addRow">Add row</button>
         <button class="btn" id="calcAll">Recalculate</button>
         <button class="btn" id="clearAll">Clear</button>
         <div class="muted">sum <span id="sumScore" class="mono">0</span> · <span id="sumLabel">eligible total</span></div>
       </div>
       <div style="overflow:auto; max-height:420px; border:1px solid rgba(244,194,13,.25); border-radius:10px">
-        <table id="linksTable"><thead></thead><tbody></tbody></table>
+        <table id="linksTable" aria-label="Post table"><thead></thead><tbody></tbody></table>
       </div>
     </section>
 
     <section class="card" id="connectX">
-      <h2 id="xHeader">Connect X and Import posts</h2>
+      <h2 id="xHeader">Connect X and import posts</h2>
       <div id="xDesc" class="muted">Mention @zama_fhe or use #ZamaCreatorProgram</div>
 
       <div class="grid two">
@@ -120,14 +125,14 @@
             <span id="xAuthStatus" class="muted">Not connected</span>
           </div>
           <div class="row">
-            <label id="xEstimateLabel" for="xEstimate">Assumed ER%</label>
+            <label id="xEstimateLabel" for="xEstimate">assumed ER percent</label>
             <input id="xEstimate" type="number" min="0.1" max="20" step="0.1" value="2.5" />
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap; margin:8px 0">
             <button id="xFetchBtn" class="btn" disabled>Fetch latest</button>
             <button id="xMoreBtn" class="btn" disabled>Load more</button>
           </div>
-          <div class="muted" id="xApiHint">Impressions are not public in most apps. We estimate impressions = (likes + retweets + quotes) / (ER%/100) when missing</div>
+          <div class="muted" id="xApiHint">Impressions are not public in most apps. When missing, impressions are estimated as (likes + retweets + quotes) divided by ER percent</div>
         </div>
         <div>
           <div class="muted" style="margin-bottom:6px" id="xScopeTitle">Required scopes</div>
@@ -144,45 +149,65 @@
 
     <section class="card">
       <h2 id="ss2Header">Season 2 comparison</h2>
-      <div id="ss2Desc" class="muted" style="margin-bottom:6px">Embedded S2 gates from the published leaderboard. Estimated rank against Top 100, 200, 300, 500</div>
+      <div id="ss2Desc" class="muted" style="margin-bottom:6px">Embedded S2 thresholds from the published leaderboard. Estimated rank against top 100 200 300 500</div>
       <div id="ss2stats" class="note"></div>
     </section>
 
-    <footer class="muted" id="footerText">No data is sent anywhere</footer>
+    <footer class="muted" id="footerText">No data is transmitted</footer>
   </div>
 
 <script>
   const $ = sel => document.querySelector(sel);
   const I18N = {
     en:{
-      intro:"Tool by Long Hậu, data for reference only. Follow <a href=https://x.com/doanlonghau target=_blank style=color:var(--accent)>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank style=color:var(--accent)>@cryptoluaga</a>",
-      title:"Social score calculator",
-      subtitle:"Enter globals, add post links, see per post and total scores",
+      intro:"Tool by Long Hậu. Data is for reference. Follow <a href=https://x.com/doanlonghau target=_blank class=link rel=noopener>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank class=link rel=noopener>@cryptoluaga</a>",
+      title:"Zama creator program score calculator",
+      subtitle:"Enter global metrics, add post URLs, review per post and total scores",
       statPosts:"posts", statTotal:"total score", statRank:"rank vs season 2",
-      globalsHeader:"Global parameters", followers:"followers", smartFollowers:"smart followers", posts:"post count", derived:"derived",
-      linksHeader:"Post links", addLink:"Add", calcAll:"Recalculate", clearAll:"Clear", th:["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Status",""], sumLabel:"eligible total",
-      xHeader:"Connect X and import posts", xDesc:"Pull posts that mention @zama_fhe or #ZamaCreatorProgram, then auto fill the table. Client side only",
+      globalsHeader:"Global parameters", followers:"followers", smartFollowers:"smart followers", posts:"number of posts", derived:"derived metrics",
+      linksHeader:"Posts", addLink:"Add row", calcAll:"Recalculate", clearAll:"Clear", th:["URL","Impr","Likes","RT","Quotes","Smart eng","ER percent","SRM","Score","Status",""], sumLabel:"eligible total",
+      xHeader:"Connect X and import posts", xDesc:"Pull posts that mention @zama_fhe or #ZamaCreatorProgram. Client side only",
       xSignIn:"Sign in with X", xSignOut:"Sign out", xAuthReady:"Not connected", xAuthBusy:"Opening X login…", xAuthOk:h=>`Connected ${h}`, xAuthFail:"Login failed",
-      xEstimateLabel:"Assumed ER% to estimate impressions when views are missing", xFetchBtn:"Fetch latest", xMoreBtn:"Load more", xApiHint:"Impressions are not public. We estimate from ER%", xScopeTitle:"Required scopes", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Ready",
+      xEstimateLabel:"Assumed ER percent to estimate impressions when views are missing", xFetchBtn:"Fetch latest", xMoreBtn:"Load more", xApiHint:"Impressions are not public. Estimated from ER percent", xScopeTitle:"Required scopes", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Ready",
       tipsHeader:"Improvement tips",
-      tips:{postMore:"Increase post count up to 20 to boost post multiplier", raiseImpr:"Raise impressions toward 100000 per post to increase SRM", avoidPenalty:"If ER% above 10 and impressions below 50000 then grow reach to avoid 0.30 penalty", lowerERspikes:"Avoid extreme ER spikes that look abnormal", boostSmart:"Increase smart engagement and smart followers for better SENG and SF", improveER:"Average ER% is low. Improve hooks, CTAs, visuals, timing", balanceMix:"Likes dominate. Encourage retweets and quotes since they weigh more", growQE:"Impressions per follower are low. Reach beyond followers to improve QE", dqWarn:"Some posts are DQ due to observed ER > 20. Recheck data"},
-      ss2Header:"Season 2 comparison", ss2Desc:"Embedded S2 thresholds. Estimated rank from Top 100, 200, 300, 500 gates", youScore:"Your score", gates:"Gates", top:n=>`Top ${n}`,
-      statusOK:"Ok", statusDQ:"DQ observed ER > 20%", statusPenalty:"Penalty 0.30", statusIneligible:"Ineligible", footer:"No data is sent anywhere"
+      tips:{
+        postMore:"Increase number of posts up to 20 to gain the post multiplier",
+        raiseImpr:"Raise impressions to improve SRM",
+        avoidPenalty:"If ER percent is above 10 and impressions are below 50000 then grow reach to avoid the 0.30 penalty",
+        lowerERspikes:"Avoid abnormal ER spikes",
+        boostSmart:"Increase smart engagement and smart followers to improve SENG and SF",
+        improveER:"Average ER percent is low. Improve hooks CTA visuals timing",
+        balanceMix:"Likes dominate. Encourage retweets and quotes because they weigh more",
+        growQE:"Impressions per follower are low. Reach beyond followers to improve QE",
+        dqWarn:"Some posts are disqualified due to observed ER above 20. Recheck data"
+      },
+      ss2Header:"Season 2 comparison", ss2Desc:"Embedded S2 thresholds. Estimated rank for top 100 200 300 500", youScore:"your score", gates:"gates", top:n=>`Top ${n}`,
+      statusOK:"Eligible", statusDQ:"Disqualified observed ER above 20 percent", statusPenalty:"Penalty 0.30", statusIneligible:"Ineligible", footer:"No data is transmitted"
     },
     vi:{
-      intro:"Tool này được làm bởi Long Hậu, dữ liệu chỉ có giá trị tham khảo. Follow <a href=https://x.com/doanlonghau target=_blank style=color:var(--accent)>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank style=color:var(--accent)>@cryptoluaga</a>",
-      title:"Bảng tính điểm social",
-      subtitle:"Nhập thông số chung, thêm link và xem điểm từng bài, tổng điểm",
-      statPosts:"bài đăng", statTotal:"tổng điểm", statRank:"xếp hạng so với ss2",
-      globalsHeader:"Thông số chung", followers:"followers", smartFollowers:"smart followers", posts:"số bài đăng", derived:"hệ số chung",
-      linksHeader:"Danh sách link", addLink:"Thêm link", calcAll:"Tính toàn bộ", clearAll:"Xóa tất cả", th:["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Trạng thái",""], sumLabel:"Tổng hợp đủ điều kiện",
-      xHeader:"Kết nối X và nhập bài viết", xDesc:"Lọc bài nhắc @zama_fhe hoặc #ZamaCreatorProgram rồi tự điền vào bảng. Chạy tại trình duyệt",
-      xSignIn:"Đăng nhập X", xSignOut:"Đăng xuất", xAuthReady:"Chưa kết nối", xAuthBusy:"Đang mở đăng nhập X…", xAuthOk:h=>`Đã kết nối ${h}`, xAuthFail:"Đăng nhập thất bại",
-      xEstimateLabel:"Giả định ER% để ước tính impressions khi thiếu view", xFetchBtn:"Tải về", xMoreBtn:"Tải thêm", xApiHint:"API công khai thường không có impressions, sẽ ước tính theo ER%", xScopeTitle:"Phạm vi cần thiết", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Sẵn sàng",
+      intro:"Công cụ do Long Hậu thực hiện. Dữ liệu chỉ mang tính tham khảo. Follow <a href=https://x.com/doanlonghau target=_blank class=link rel=noopener>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank class=link rel=noopener>@cryptoluaga</a>",
+      title:"Bộ tính điểm chương trình Zama",
+      subtitle:"Nhập thông số chung, thêm URL bài viết, xem điểm từng bài và tổng điểm",
+      statPosts:"bài đăng", statTotal:"tổng điểm", statRank:"xếp hạng so với season 2",
+      globalsHeader:"Thông số chung", followers:"Followers", smartFollowers:"Smart followers", posts:"Số bài đăng", derived:"Suy ra",
+      linksHeader:"Danh sách bài", addLink:"Thêm dòng", calcAll:"Tính lại", clearAll:"Xóa", th:["URL","Impr","Likes","RT","Quotes","Smart eng","ER phần trăm","SRM","Score","Trạng thái",""], sumLabel:"tổng đủ điều kiện",
+      xHeader:"Kết nối X và nhập bài", xDesc:"Lọc bài có @zama_fhe hoặc #ZamaCreatorProgram. Xử lý trên trình duyệt",
+      xSignIn:"Đăng nhập X", xSignOut:"Đăng xuất", xAuthReady:"Chưa kết nối", xAuthBusy:"Đang mở đăng nhập X…", xAuthOk:h=>`Đã kết nối ${h}`, xAuthFail:"Đăng nhập không thành công",
+      xEstimateLabel:"Giả định ER phần trăm để ước tính impressions khi thiếu view", xFetchBtn:"Tải mới", xMoreBtn:"Tải thêm", xApiHint:"API công khai thường không có impressions. Sẽ ước tính theo ER phần trăm", xScopeTitle:"Phạm vi cần thiết", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Sẵn sàng",
       tipsHeader:"Gợi ý cải thiện",
-      tips:{postMore:"Tăng số bài đến tối đa 20 để hưởng post multiplier", raiseImpr:"Đẩy impressions mỗi bài gần 100000 để tăng SRM", avoidPenalty:"Nếu ER% trên 10 và impressions dưới 50000 thì cố vượt 50000 để tránh phạt 0.30", lowerERspikes:"Tránh ER tăng đột biến bất thường", boostSmart:"Tăng smart engagement và smart followers để cải thiện SENG và SF", improveER:"ER% trung bình thấp. Cải thiện hook, CTA, hình ảnh, khung giờ", balanceMix:"Likes chiếm áp đảo. Khuyến khích retweet và quote vì trọng số cao", growQE:"Impressions trên mỗi follower thấp. Mở rộng reach ngoài tệp follower để tăng QE", dqWarn:"Có post bị DQ do ER quan sát > 20. Kiểm tra dữ liệu"},
-      ss2Header:"So với Season 2", ss2Desc:"Ngưỡng Season 2 đã nhúng. Ước lượng hạng theo mốc Top 100, 200, 300, 500", youScore:"Điểm của bạn", gates:"Ngưỡng", top:n=>`Top ${n}`,
-      statusOK:"Ok", statusDQ:"DQ ER quan sát > 20%", statusPenalty:"Phạt 0.30", statusIneligible:"Không đủ điều kiện", footer:"Không gửi dữ liệu ra ngoài"
+      tips:{
+        postMore:"Tăng số bài đến ít nhất 20 để hưởng post multiplier",
+        raiseImpr:"Đẩy impressions nhưng mỗi bài cần dưới 100000 để cải thiện SRM",
+        avoidPenalty:"Nếu ER phần trăm trên 10 và impressions dưới 50000 thì tăng reach để tránh mức phạt 0.30",
+        lowerERspikes:"Tránh đột biến ER bất thường",
+        boostSmart:"Tăng smart engagement và smart followers để cải thiện SENG và SF",
+        improveER:"ER phần trăm trung bình thấp. Cải thiện hook CTA hình ảnh và khung giờ",
+        balanceMix:"Likes đang chiếm đa số. Khuyến khích retweet và quote vì trọng số cao hơn",
+        growQE:"Impressions trên mỗi follower thấp. Mở rộng reach ngoài tệp follower để cải thiện QE",
+        dqWarn:"Một số bài bị loại do ER quan sát trên 20. Kiểm tra lại dữ liệu"
+      },
+      ss2Header:"So với Season 2", ss2Desc:"Dữ liệu Season đã được nạp. Ước lượng hạng ở các mốc top 100 200 300 500", youScore:"Điểm của bạn", gates:"ngang với", top:n=>`Top ${n}`,
+      statusOK:"Đủ điều kiện", statusDQ:"Loại do ER quan sát trên 20 phần trăm", statusPenalty:"Phạt 0.30", statusIneligible:"Không đủ điều kiện", footer:"Không thu thập dữ liệu"
     }
   };
   let LANG = 'en';
@@ -206,6 +231,8 @@
     $('#ss2Header').textContent = t.ss2Header; $('#ss2Desc').textContent = t.ss2Desc; $('#footerText').textContent = t.footer;
     document.documentElement.lang = LANG === 'vi' ? 'vi' : 'en';
     $('#btnEN').classList.toggle('active', LANG==='en'); $('#btnVI').classList.toggle('active', LANG==='vi');
+    $('#btnEN').setAttribute('aria-selected', LANG==='en' ? 'true' : 'false');
+    $('#btnVI').setAttribute('aria-selected', LANG==='vi' ? 'true' : 'false');
   }
 
   $('#btnEN').addEventListener('click', ()=>{ LANG='en'; renderStatic(); buildThead(); recalc(); });
@@ -229,17 +256,17 @@
   function addRow(obj){
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input name=url placeholder=https://x.com/... style="width:100%" /></td>
-      <td><input name=impressions type=number min=0 value=${obj?.impressions||0}></td>
-      <td><input name=likes type=number min=0 value=${obj?.likes||0}></td>
-      <td><input name=retweets type=number min=0 value=${obj?.retweets||0}></td>
-      <td><input name=quotes type=number min=0 value=${obj?.quotes||0}></td>
-      <td><input name=seng type=number min=0 value=${obj?.smart_engagement||0}></td>
+      <td><input name=url placeholder=https://x.com/... style="width:100%" aria-label="post url" /></td>
+      <td><input name=impressions type=number min=0 value=${obj?.impressions||0} aria-label="impressions"></td>
+      <td><input name=likes type=number min=0 value=${obj?.likes||0} aria-label="likes"></td>
+      <td><input name=retweets type=number min=0 value=${obj?.retweets||0} aria-label="retweets"></td>
+      <td><input name=quotes type=number min=0 value=${obj?.quotes||0} aria-label="quotes"></td>
+      <td><input name=seng type=number min=0 value=${obj?.smart_engagement||0} aria-label="smart engagement"></td>
       <td class=mono data-erpct>0.00</td>
       <td class=mono data-srm>0.000</td>
       <td class=mono data-score>0</td>
-      <td><span class="pill" data-status>Ok</span></td>
-      <td><button class="btn" data-del>X</button></td>`;
+      <td><span class="pill" data-status>Eligible</span></td>
+      <td><button class="btn" data-del aria-label="delete row">X</button></td>`;
     $('#linksTable tbody').appendChild(tr);
     tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); });
     tr.querySelectorAll('input').forEach(inp=> inp.addEventListener('input', recalc));
@@ -340,9 +367,9 @@
 
   const OAUTH = { // fill these three to go live
     authorizeBase:'https://twitter.com/i/oauth2/authorize',
-    tokenProxy:'https://YOUR-WORKER.workers.dev/x/oauth/token', // Cloudflare Worker endpoint
+    tokenProxy:'https://YOUR-WORKER.workers.dev/x/oauth/token',
     clientId:'YOUR_X_CLIENT_ID',
-    redirectUri: location.origin + location.pathname // allow same file hosted under your domain
+    redirectUri: location.origin + location.pathname
   };
   const OAUTH_SCOPES = ['tweet.read','users.read','offline.access'];
 
