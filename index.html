@@ -1,406 +1,397 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Zama Creator Program Score Calculator</title>
-  <style>
-    :root { --bg:#0a0a06; --card:#12100a; --muted:#beb38a; --text:#fff7d6; --accent:#ffd84d; --good:#7bd88a; --warn:#ffcc00; --bad:#ff7a7a; --border:#3a300f; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px }
-    *{ box-sizing:border-box }
-    body{ margin:0; background:radial-gradient(1200px 600px at 20% -10%, #1f1900 0%, transparent 60%), linear-gradient(180deg,#0a0a06,#0a0a06); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial; padding:24px }
-    h1,h2{ margin:0 0 12px } h1{ font-size:24px } h2{ font-size:18px; color:var(--muted) }
-    .wrap{ max-width:1100px; margin:0 auto; display:grid; gap:16px }
-    .grid{ display:grid; gap:16px } .two{ grid-template-columns:repeat(2,minmax(0,1fr)) } .three{ grid-template-columns:repeat(3,minmax(0,1fr)) }
-    .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px }
-    .muted{ color:var(--muted) }
-    .row{ display:grid; grid-template-columns:180px 1fr; gap:10px; align-items:center; margin:10px 0 }
-    label{ font-weight:600 }
-    input[type="number"],input[type="text"],textarea{ width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#191407; color:var(--text); outline:none; box-shadow:inset 0 1px 0 rgba(255,255,255,.03) }
-    input[type="number"]:focus,input[type="text"]:focus,textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,216,77,.15) }
-    .btn{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:#1a1407; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600 }
-    .btn:hover{ background:#221a09 } .btn.primary{ background:linear-gradient(135deg,#ffdb58,#ffd84d); color:#3a2f00; border:none } .btn.primary:hover{ filter:brightness(1.03) } .btn.ghost{ background:transparent }
-    .langbar{ display:flex; justify-content:center; gap:8px; margin-bottom:8px }
-    .active{ outline:2px solid var(--accent) }
-    table{ width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px; border:1px solid var(--border) }
-    th,td{ padding:10px 8px; text-align:left; border-bottom:1px solid var(--border) } th{ background:#1c1606; color:var(--muted); font-weight:700; position:sticky; top:0; z-index:1 }
-    tr:hover td{ background:rgba(255,216,77,.06) } td input{ width:100% }
-    .pill{ display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700 }
-    .pill.good{ background:rgba(123,216,138,.14); color:#9af0ac } .pill.warn{ background:rgba(255,204,0,.14); color:var(--warn) } .pill.bad{ background:rgba(255,122,122,.14); color:var(--bad) }
-    .right{ text-align:right } .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,Liberation Mono,monospace }
-    .intro{ display:flex; align-items:center; gap:12px; justify-content:center; background:#1a1407; padding:12px; border-radius:12px; border:1px solid var(--border); box-shadow:var(--shadow) }
-    .intro img{ height:40px }
-    .footer{ color:var(--muted); font-size:12px; text-align:center; margin-top:8px }
-    @media (max-width:880px){ .two{ grid-template-columns:1fr } .row{ grid-template-columns:1fr } }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zama score calculator</title>
+<style>
+  :root{
+    --bg:#0b0b0b; --card:#151515; --fg:#f7f7f7; --muted:#c8c8c8; --accent:#f4c20d; --accent2:#ffda3a;
+    --bad:#ff5a5a; --warn:#ffb84d; --good:#6ad36a; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  html,body{background:var(--bg); color:var(--fg); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
+  .wrap{max-width:1100px; margin:30px auto; padding:0 16px}
+  header{display:flex; gap:14px; align-items:center; margin-bottom:8px}
+  header img{width:42px; height:42px}
+  h1{font-size:1.9rem; margin:0}
+  .muted{color:var(--muted)}
+  .card{background:linear-gradient(180deg, rgba(244,194,13,.12), rgba(244,194,13,.05)); border:1px solid rgba(244,194,13,.25); border-radius:16px; padding:16px; margin:14px 0; box-shadow: 0 0 0 1px rgba(244,194,13,.08) inset}
+  .grid{display:grid; gap:12px}
+  .two{grid-template-columns: 1fr 1fr}
+  @media(max-width:900px){.two{grid-template-columns:1fr}}
+  .row{display:grid; grid-template-columns: 190px 1fr; gap:10px; align-items:center; margin:8px 0}
+  label{color:#ffe27a}
+  input, select{background:#0f0f0f; color:var(--fg); border:1px solid rgba(244,194,13,.35); padding:10px 12px; border-radius:10px; outline:none}
+  input:focus{box-shadow:0 0 0 2px rgba(255,218,58,.35)}
+  .btn{background:#1a1a1a; border:1px solid rgba(244,194,13,.6); color:#000; color:#272100; padding:10px 14px; border-radius:12px; cursor:pointer}
+  .btn.primary{background:var(--accent2); color:#000; font-weight:700}
+  .btn:disabled{opacity:.55; cursor:not-allowed}
+  .right{display:flex; gap:8px; align-items:center}
+  .lang{display:flex; gap:6px}
+  .lang button{background:transparent; border:1px solid rgba(244,194,13,.4); color:var(--fg); padding:6px 10px; border-radius:10px; cursor:pointer}
+  .lang button.active{background:var(--accent2); color:#000; border-color:var(--accent2)}
+  table{width:100%; border-collapse:collapse; font-size:.95rem}
+  th,td{border-bottom:1px dashed rgba(244,194,13,.25); padding:8px 6px; text-align:left}
+  th{color:#ffe27a; position:sticky; top:0; background:rgba(15,15,15,.8); backdrop-filter: blur(6px)}
+  .mono{font-family:var(--mono)}
+  .pill{display:inline-block; padding:4px 8px; border-radius:999px; font-size:.8rem; border:1px solid rgba(255,255,255,.1)}
+  .pill.good{background:rgba(106,211,106,.12); border-color:rgba(106,211,106,.4)}
+  .pill.warn{background:rgba(255,184,77,.12); border-color:rgba(255,184,77,.4)}
+  .pill.bad{background:rgba(255,90,90,.12); border-color:rgba(255,90,90,.45)}
+  footer{margin:20px 0; color:var(--muted); font-size:.9rem}
+  .note{font-size:.9rem}
+</style>
 </head>
 <body>
   <div class="wrap">
-    <div class="intro">
-      <img src="https://github.com/doanlonghau/zama-calculator/blob/main/Zama_idDz0xiVMe_0.png?raw=true" alt="logo" />
-      <div id="introText"></div>
-    </div>
-
-    <div class="langbar">
-      <button id="btnEN" class="btn active">English</button>
-      <button id="btnVI" class="btn">Tiếng Việt</button>
-    </div>
-
-    <header class="grid two">
-      <div class="card">
-        <h1 id="title"></h1>
-        <div id="subtitle" class="muted"></div>
+    <header>
+      <img src="https://cdn.prod.website-files.com/61bc21e3a843412266a08eb3/68417dce00c33fce2253fc6e_Untitled%20design%20(1).svg" alt="logo" />
+      <div>
+        <h1 id="title">Social score calculator</h1>
+        <div id="subtitle" class="muted">Enter globals, add post links, see per post and total scores</div>
       </div>
-      <div class="card grid three">
-        <div>
-          <div class="muted" id="statPostsLabel"></div>
-          <div id="postCountStat" class="mono" style="font-size:22px">0</div>
-        </div>
-        <div>
-          <div class="muted" id="statTotalLabel"></div>
-          <div id="totalScore" class="mono" style="font-size:22px">0</div>
-        </div>
-        <div>
-          <div class="muted" id="statRankLabel"></div>
-          <div id="rankVsSS2" class="mono" style="font-size:22px">…</div>
+      <div class="right" style="margin-left:auto">
+        <div class="lang">
+          <button id="btnEN" class="active">English</button>
+          <button id="btnVI">Tiếng Việt</button>
         </div>
       </div>
     </header>
 
-    <section class="card">
-      <h2 id="globalsHeader"></h2>
-      <div class="row">
-        <label for="followers" id="lblFollowers"></label>
-        <input id="followers" type="number" min="0" step="1" value="0" />
-      </div>
-      <div class="row">
-        <label for="smartFollowers" id="lblSmartFollowers"></label>
-        <input id="smartFollowers" type="number" min="0" step="1" value="0" />
-      </div>
-      <div class="row">
-        <label for="posts" id="lblPosts"></label>
-        <input id="posts" type="number" min="0" step="1" value="0" />
-      </div>
-      <div class="row">
-        <label id="lblDerived"></label>
-        <div class="muted mono" id="derivedGlobals">SF 0, postMult 1.00</div>
-      </div>
-    </section>
+    <div class="muted" id="introText">
+      Tool by Long Hậu, data for reference only. Follow <a href="https://x.com/doanlonghau" target="_blank" style="color:var(--accent)">@doanlonghau</a> · <a href="https://x.com/cryptoluaga" target="_blank" style="color:var(--accent)">@cryptoluaga</a>
+    </div>
 
     <section class="card">
-      <div style="display:flex; gap:8px; justify-content:space-between; align-items:center; margin-bottom:8px">
-        <h2 id="linksHeader"></h2>
-        <div style="display:flex; gap:8px">
-          <button id="addRow" class="btn"></button>
-          <button id="calcAll" class="btn primary"></button>
-          <button id="clearAll" class="btn ghost"></button>
+      <div class="grid two">
+        <div>
+          <div style="display:flex; gap:10px; align-items:center">
+            <div><span id="statPostsVal" class="mono" style="font-size:1.5rem">0</span> <span id="statPostsLabel" class="muted">posts</span></div>
+            <div><span id="totalScore" class="mono" style="font-size:1.5rem">0</span> <span id="statTotalLabel" class="muted">total score</span></div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div><span id="rankVsSS2" class="mono" style="font-size:1.5rem">>500</span> <span id="statRankLabel" class="muted">rank vs season 2</span></div>
         </div>
       </div>
-      <div style="overflow:auto">
-        <table id="linksTable">
-          <thead><tr id="theadRow"></tr></thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr>
-              <th colspan="7" class="right" id="sumLabel"></th>
-              <th class="right" id="sumScore" colspan="2">0</th>
-              <th colspan="2"></th>
-            </tr>
-          </tfoot>
-        </table>
+    </section>
+
+    <section class="card">
+      <h2 id="globalsHeader">Global parameters</h2>
+      <div class="grid two">
+        <div>
+          <div class="row"><label id="lblFollowers" for="followers">followers</label><input id="followers" type="number" min="0" value="0" /></div>
+          <div class="row"><label id="lblSmartFollowers" for="smartFollowers">smart followers</label><input id="smartFollowers" type="number" min="0" value="0" /></div>
+          <div class="row"><label id="lblPosts" for="posts">post count</label><input id="posts" type="number" min="0" value="0" /></div>
+        </div>
+        <div>
+          <div class="row"><label id="lblDerived">derived</label>
+            <div>
+              <div class="muted note">SRM uses per row impressions, SF uses smart followers</div>
+              <div class="note">SF <span class="mono" id="sfVal">0.00</span> · postMult <span class="mono" id="postMultVal">1.00</span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="card">
-      <h2 id="tipsHeader"></h2>
+      <h2 id="linksHeader">Post links</h2>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin:6px 0">
+        <button class="btn" id="addRow">Add</button>
+        <button class="btn" id="calcAll">Recalculate</button>
+        <button class="btn" id="clearAll">Clear</button>
+        <div class="muted">sum <span id="sumScore" class="mono">0</span> · <span id="sumLabel">eligible total</span></div>
+      </div>
+      <div style="overflow:auto; max-height:420px; border:1px solid rgba(244,194,13,.25); border-radius:10px">
+        <table id="linksTable"><thead></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <section class="card" id="connectX">
+      <h2 id="xHeader">Connect X and import posts</h2>
+      <div id="xDesc" class="muted">Pull posts that mention @zama_fhe or use #ZamaCreatorProgram, then auto fill the table. Client side only</div>
+
+      <div class="grid two">
+        <div>
+          <div style="display:flex; gap:8px; align-items:center; margin:8px 0">
+            <button id="xLoginBtn" class="btn primary">Sign in with X</button>
+            <button id="xLogoutBtn" class="btn" style="display:none">Sign out</button>
+            <span id="xAuthStatus" class="muted">Not connected</span>
+          </div>
+          <div class="row">
+            <label id="xEstimateLabel" for="xEstimate">Assumed ER%</label>
+            <input id="xEstimate" type="number" min="0.1" max="20" step="0.1" value="2.5" />
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin:8px 0">
+            <button id="xFetchBtn" class="btn" disabled>Fetch latest</button>
+            <button id="xMoreBtn" class="btn" disabled>Load more</button>
+          </div>
+          <div class="muted" id="xApiHint">Impressions are not public in most apps. We estimate impressions = (likes + retweets + quotes) / (ER%/100) when missing</div>
+        </div>
+        <div>
+          <div class="muted" style="margin-bottom:6px" id="xScopeTitle">Required scopes</div>
+          <ul id="xScopeList" class="muted" style="margin:0 0 8px 18px"><li>tweet.read</li><li>users.read</li><li>offline.access</li></ul>
+          <div class="muted" id="xApiStatus">Ready</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 id="tipsHeader">Improvement tips</h2>
       <div id="tipsBox" class="muted"></div>
     </section>
 
     <section class="card">
-      <h2 id="ss2Header"></h2>
-      <div id="ss2Desc" class="muted" style="margin-bottom:8px"></div>
-      <div id="ss2stats" class="muted"></div>
+      <h2 id="ss2Header">Season 2 comparison</h2>
+      <div id="ss2Desc" class="muted" style="margin-bottom:6px">Embedded S2 gates from the published leaderboard. Estimated rank against Top 100, 200, 300, 500</div>
+      <div id="ss2stats" class="note"></div>
     </section>
 
-    <div class="footer" id="footerText"></div>
+    <footer class="muted" id="footerText">No data is sent anywhere</footer>
   </div>
 
-  <script>
-    // thresholds from Season 2 (embedded)
-    const SS2 = { n:500, p100:11260, p200:7013, p300:4694, p500:2897, max:65476, min:2897 };
-
-    // i18n
-    const I18N = {
-      en: {
-        intro: "Tool by Long Hậu – data for reference only. Follow <a href='https://x.com/doanlonghau' target='_blank' style='color:var(--accent)'>@doanlonghau</a> · <a href='https://x.com/cryptoluaga' target='_blank' style='color:var(--accent)'>@cryptoluaga</a>",
-        title: "Social score calculator",
-        subtitle: "Enter globals, add post links, see per post and total scores",
-        statPosts: "posts",
-        statTotal: "total score",
-        statRank: "rank vs season 2",
-        globalsHeader: "Global parameters",
-        followers: "followers",
-        smartFollowers: "smart followers",
-        posts: "post count",
-        derived: "derived",
-        linksHeader: "Post links",
-        addLink: "Add",
-        calcAll: "Recalculate",
-        clearAll: "Clear",
-        th: ["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Status",""],
-        sumLabel: "eligible total",
-        ss2Header: "Season 2 comparison",
-        ss2Desc: "Embedded S2 thresholds. Ranking is estimated from Top 100, 200, 300, 500 gates.",
-        youScore: "Your score",
-        gates: "Gates",
-        top: n=>`Top ${n}`,
-        nearAbove: "nearest above",
-        nearBelow: "nearest below",
-        statusOK: "Ok",
-        statusDQ: "DQ observed ER > 20%",
-        statusPenalty: "Penalty 0.30",
-        statusIneligible: "Ineligible",
-        footer: "No data is sent anywhere",
-        tipsHeader: "Improvement tips",
-        tips: {
-          postMore: "Increase post count up to 20 to boost post multiplier",
-          raiseImpr: "Raise impressions to increase SRM",
-          avoidPenalty: "If ER% above 10 with impressions below 50000, grow reach to 50000+ to avoid the 0.30 penalty",
-          lowerERspikes: "Avoid extreme ER spikes that may look abnormal",
-          boostSmart: "Increase smart engagement and smart followers for better SENG and SF",
-          improveER: "Average ER% is low. Try stronger hooks, CTAs, visuals, and timing",
-          balanceMix: "Likes dominate. Encourage retweets and quotes since they have higher weights",
-          growQE: "Impressions per follower are low. Aim for reach beyond followers to improve QE",
-          dqWarn: "Some posts are DQ due to observed ER > 20. Recheck data or diversify distribution"
-        }
-      },
-      vi: {
-        intro: "Tool này được làm bởi Long Hậu, dữ liệu chỉ có giá trị tham khảo. Follow <a href='https://x.com/doanlonghau' target='_blank' style='color:var(--accent)'>@doanlonghau</a> · <a href='https://x.com/cryptoluaga' target='_blank' style='color:var(--accent)'>@cryptoluaga</a>",
-        title: "Bảng tính điểm social",
-        subtitle: "Nhập thông số chung, thêm link và xem điểm từng bài, tổng điểm",
-        statPosts: "bài đăng",
-        statTotal: "tổng điểm",
-        statRank: "xếp hạng so với ss2",
-        globalsHeader: "Thông số chung",
-        followers: "followers",
-        smartFollowers: "smart followers",
-        posts: "số bài đăng",
-        derived: "hệ số chung",
-        linksHeader: "Danh sách link",
-        addLink: "Thêm link",
-        calcAll: "Tính toàn bộ",
-        clearAll: "Xóa tất cả",
-        th: ["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Trạng thái",""],
-        sumLabel: "Tổng hợp đủ điều kiện",
-        ss2Header: "So với Season 2",
-        ss2Desc: "Ngưỡng Season 2 đã nhúng. Công cụ ước lượng hạng dựa vào các mốc Top 100, 200, 300, 500.",
-        youScore: "Điểm của bạn",
-        gates: "Ngưỡng",
-        top: n=>`Top ${n}`,
-        nearAbove: "Gần nhất phía trên",
-        nearBelow: "phía dưới",
-        statusOK: "Ok",
-        statusDQ: "DQ ER quan sát > 20%",
-        statusPenalty: "Phạt 0.30",
-        statusIneligible: "Không đủ điều kiện",
-        footer: "Không gửi dữ liệu ra ngoài",
-        tipsHeader: "Gợi ý cải thiện",
-        tips: {
-          postMore: "Tăng số bài đến tối đa 20 để hưởng post multiplier",
-          raiseImpr: "Đẩy impressions để tăng SRM",
-          avoidPenalty: "Nếu ER% trên 10 và impressions dưới 50000 thì cố gắng vượt 50000 để tránh phạt 0.30",
-          lowerERspikes: "Tránh ER tăng đột biến bất thường",
-          boostSmart: "Tăng smart engagement và smart followers để cải thiện SENG và SF",
-          improveER: "ER% trung bình thấp. Hãy cải thiện hook, CTA, hình ảnh và khung giờ",
-          balanceMix: "Likes đang chiếm áp đảo. Khuyến khích retweet và quote vì có trọng số cao hơn",
-          growQE: "Impressions trên mỗi follower thấp. Hãy mở rộng reach ra ngoài tệp follower để tăng QE",
-          dqWarn: "Một số bài bị DQ do ER quan sát > 20. Kiểm tra lại dữ liệu hoặc phân phối đa kênh"
-        }
-      }
-    };
-
-    let LANG = 'en';
-    const $ = sel => document.querySelector(sel);
-
-    function fmt(x, d=2){ if(!isFinite(x)) return '0'; return Number(x).toLocaleString(LANG==='vi'?'vi-VN':'en-US',{ maximumFractionDigits:d, minimumFractionDigits:0 }); }
-
-    function renderStatic(){
-      const t = I18N[LANG];
-      document.querySelector('#introText').innerHTML = t.intro;
-      document.querySelector('#title').textContent = t.title;
-      document.querySelector('#subtitle').textContent = t.subtitle;
-      document.querySelector('#statPostsLabel').textContent = t.statPosts;
-      document.querySelector('#statTotalLabel').textContent = t.statTotal;
-      document.querySelector('#statRankLabel').textContent = t.statRank;
-      document.querySelector('#globalsHeader').textContent = t.globalsHeader;
-      document.querySelector('#lblFollowers').textContent = t.followers;
-      document.querySelector('#lblSmartFollowers').textContent = t.smartFollowers;
-      document.querySelector('#lblPosts').textContent = t.posts;
-      document.querySelector('#lblDerived').textContent = t.derived;
-      document.querySelector('#linksHeader').textContent = t.linksHeader;
-      document.querySelector('#addRow').textContent = t.addLink;
-      document.querySelector('#calcAll').textContent = t.calcAll;
-      document.querySelector('#clearAll').textContent = t.clearAll;
-      document.querySelector('#sumLabel').textContent = t.sumLabel;
-      document.querySelector('#ss2Header').textContent = t.ss2Header;
-      document.querySelector('#ss2Desc').textContent = t.ss2Desc;
-      document.querySelector('#footerText').textContent = t.footer;
-      document.querySelector('#tipsHeader').textContent = t.tipsHeader;
-      document.documentElement.lang = LANG==='vi' ? 'vi' : 'en';
-      document.querySelector('#btnEN').classList.toggle('active', LANG==='en');
-      document.querySelector('#btnVI').classList.toggle('active', LANG==='vi');
+<script>
+  const $ = sel => document.querySelector(sel);
+  const I18N = {
+    en:{
+      intro:"Tool by Long Hậu, data for reference only. Follow <a href=https://x.com/doanlonghau target=_blank style=color:var(--accent)>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank style=color:var(--accent)>@cryptoluaga</a>",
+      title:"Social score calculator",
+      subtitle:"Enter globals, add post links, see per post and total scores",
+      statPosts:"posts", statTotal:"total score", statRank:"rank vs season 2",
+      globalsHeader:"Global parameters", followers:"followers", smartFollowers:"smart followers", posts:"post count", derived:"derived",
+      linksHeader:"Post links", addLink:"Add", calcAll:"Recalculate", clearAll:"Clear", th:["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Status",""], sumLabel:"eligible total",
+      xHeader:"Connect X and import posts", xDesc:"Pull posts that mention @zama_fhe or #ZamaCreatorProgram, then auto fill the table. Client side only",
+      xSignIn:"Sign in with X", xSignOut:"Sign out", xAuthReady:"Not connected", xAuthBusy:"Opening X login…", xAuthOk:h=>`Connected ${h}`, xAuthFail:"Login failed",
+      xEstimateLabel:"Assumed ER% to estimate impressions when views are missing", xFetchBtn:"Fetch latest", xMoreBtn:"Load more", xApiHint:"Impressions are not public. We estimate from ER%", xScopeTitle:"Required scopes", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Ready",
+      tipsHeader:"Improvement tips",
+      tips:{postMore:"Increase post count up to 20 to boost post multiplier", raiseImpr:"Raise impressions toward 100000 per post to increase SRM", avoidPenalty:"If ER% above 10 and impressions below 50000 then grow reach to avoid 0.30 penalty", lowerERspikes:"Avoid extreme ER spikes that look abnormal", boostSmart:"Increase smart engagement and smart followers for better SENG and SF", improveER:"Average ER% is low. Improve hooks, CTAs, visuals, timing", balanceMix:"Likes dominate. Encourage retweets and quotes since they weigh more", growQE:"Impressions per follower are low. Reach beyond followers to improve QE", dqWarn:"Some posts are DQ due to observed ER > 20. Recheck data"},
+      ss2Header:"Season 2 comparison", ss2Desc:"Embedded S2 thresholds. Estimated rank from Top 100, 200, 300, 500 gates", youScore:"Your score", gates:"Gates", top:n=>`Top ${n}`,
+      statusOK:"Ok", statusDQ:"DQ observed ER > 20%", statusPenalty:"Penalty 0.30", statusIneligible:"Ineligible", footer:"No data is sent anywhere"
+    },
+    vi:{
+      intro:"Tool này được làm bởi Long Hậu, dữ liệu chỉ có giá trị tham khảo. Follow <a href=https://x.com/doanlonghau target=_blank style=color:var(--accent)>@doanlonghau</a> · <a href=https://x.com/cryptoluaga target=_blank style=color:var(--accent)>@cryptoluaga</a>",
+      title:"Bảng tính điểm social",
+      subtitle:"Nhập thông số chung, thêm link và xem điểm từng bài, tổng điểm",
+      statPosts:"bài đăng", statTotal:"tổng điểm", statRank:"xếp hạng so với ss2",
+      globalsHeader:"Thông số chung", followers:"followers", smartFollowers:"smart followers", posts:"số bài đăng", derived:"hệ số chung",
+      linksHeader:"Danh sách link", addLink:"Thêm link", calcAll:"Tính toàn bộ", clearAll:"Xóa tất cả", th:["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Trạng thái",""], sumLabel:"Tổng hợp đủ điều kiện",
+      xHeader:"Kết nối X và nhập bài viết", xDesc:"Lọc bài nhắc @zama_fhe hoặc #ZamaCreatorProgram rồi tự điền vào bảng. Chạy tại trình duyệt",
+      xSignIn:"Đăng nhập X", xSignOut:"Đăng xuất", xAuthReady:"Chưa kết nối", xAuthBusy:"Đang mở đăng nhập X…", xAuthOk:h=>`Đã kết nối ${h}`, xAuthFail:"Đăng nhập thất bại",
+      xEstimateLabel:"Giả định ER% để ước tính impressions khi thiếu view", xFetchBtn:"Tải về", xMoreBtn:"Tải thêm", xApiHint:"API công khai thường không có impressions, sẽ ước tính theo ER%", xScopeTitle:"Phạm vi cần thiết", xScopeList:["tweet.read","users.read","offline.access"], xApiStatus:"Sẵn sàng",
+      tipsHeader:"Gợi ý cải thiện",
+      tips:{postMore:"Tăng số bài đến tối đa 20 để hưởng post multiplier", raiseImpr:"Đẩy impressions mỗi bài gần 100000 để tăng SRM", avoidPenalty:"Nếu ER% trên 10 và impressions dưới 50000 thì cố vượt 50000 để tránh phạt 0.30", lowerERspikes:"Tránh ER tăng đột biến bất thường", boostSmart:"Tăng smart engagement và smart followers để cải thiện SENG và SF", improveER:"ER% trung bình thấp. Cải thiện hook, CTA, hình ảnh, khung giờ", balanceMix:"Likes chiếm áp đảo. Khuyến khích retweet và quote vì trọng số cao", growQE:"Impressions trên mỗi follower thấp. Mở rộng reach ngoài tệp follower để tăng QE", dqWarn:"Có post bị DQ do ER quan sát > 20. Kiểm tra dữ liệu"},
+      ss2Header:"So với Season 2", ss2Desc:"Ngưỡng Season 2 đã nhúng. Ước lượng hạng theo mốc Top 100, 200, 300, 500", youScore:"Điểm của bạn", gates:"Ngưỡng", top:n=>`Top ${n}`,
+      statusOK:"Ok", statusDQ:"DQ ER quan sát > 20%", statusPenalty:"Phạt 0.30", statusIneligible:"Không đủ điều kiện", footer:"Không gửi dữ liệu ra ngoài"
     }
+  };
+  let LANG = 'en';
 
-    function globals(){
-      const followers = Math.max(0, +$('#followers').value||0);
-      const smartFollowers = Math.max(0, +$('#smartFollowers').value||0);
-      const posts = Math.max(0, +$('#posts').value||0);
-      const SF = Math.min(Math.log10(smartFollowers+1), 3.0);
-      const postMult = 1 + 0.02*Math.min(posts,20);
-      $('#derivedGlobals').textContent = `SF ${SF.toFixed(3)}, postMult ${postMult.toFixed(2)}`;
-      $('#postCountStat').textContent = fmt(posts);
-      return { followers, smartFollowers, posts, SF, postMult };
+  // gates derived from provided S2 sheet (approximate)
+  const SS2 = { n:500, p100:11260, p200:7013, p300:4761, p500:2897 };
+
+  function fmt(x, d=0){ if(!isFinite(x)) return '0'; return (+x).toLocaleString(undefined,{maximumFractionDigits:d, minimumFractionDigits:d}); }
+
+  function renderStatic(){
+    const t = I18N[LANG];
+    $('#introText').innerHTML = t.intro;
+    $('#title').textContent = t.title; $('#subtitle').textContent = t.subtitle;
+    $('#statPostsLabel').textContent = t.statPosts; $('#statTotalLabel').textContent = t.statTotal; $('#statRankLabel').textContent = t.statRank;
+    $('#globalsHeader').textContent = t.globalsHeader; $('#lblFollowers').textContent = t.followers; $('#lblSmartFollowers').textContent = t.smartFollowers; $('#lblPosts').textContent = t.posts; $('#lblDerived').textContent = t.derived;
+    $('#linksHeader').textContent = t.linksHeader; $('#addRow').textContent = t.addLink; $('#calcAll').textContent = t.calcAll; $('#clearAll').textContent = t.clearAll; $('#sumLabel').textContent = t.sumLabel;
+    $('#xHeader').textContent = t.xHeader; $('#xDesc').textContent = t.xDesc;
+    $('#xLoginBtn').textContent = t.xSignIn; $('#xLogoutBtn').textContent = t.xSignOut; $('#xAuthStatus').textContent = t.xAuthReady;
+    $('#xEstimateLabel').textContent = t.xEstimateLabel; $('#xFetchBtn').textContent = t.xFetchBtn; $('#xMoreBtn').textContent = t.xMoreBtn; $('#xApiHint').textContent = t.xApiHint; $('#xScopeTitle').textContent = t.xScopeTitle; $('#xScopeList').innerHTML = t.xScopeList.map(s=>`<li>${s}</li>`).join(''); $('#xApiStatus').textContent = t.xApiStatus;
+    $('#tipsHeader').textContent = t.tipsHeader;
+    $('#ss2Header').textContent = t.ss2Header; $('#ss2Desc').textContent = t.ss2Desc; $('#footerText').textContent = t.footer;
+    document.documentElement.lang = LANG === 'vi' ? 'vi' : 'en';
+    $('#btnEN').classList.toggle('active', LANG==='en'); $('#btnVI').classList.toggle('active', LANG==='vi');
+  }
+
+  $('#btnEN').addEventListener('click', ()=>{ LANG='en'; renderStatic(); buildThead(); recalc(); });
+  $('#btnVI').addEventListener('click', ()=>{ LANG='vi'; renderStatic(); buildThead(); recalc(); });
+
+  function buildThead(){
+    const t = I18N[LANG];
+    const tr = document.createElement('tr');
+    t.th.forEach(h=>{ const th=document.createElement('th'); th.textContent=h; tr.appendChild(th); });
+    const thead = $('#linksTable thead'); thead.innerHTML=''; thead.appendChild(tr);
+  }
+
+  function globals(){
+    const followers = +$('#followers').value||0; const smart_followers = +$('#smartFollowers').value||0; const posts = +$('#posts').value||0;
+    const SF = Math.min(Math.log10(smart_followers + 1), 3.0);
+    const postMult = 1 + 0.02 * Math.min(posts, 20);
+    $('#sfVal').textContent = SF.toFixed(2); $('#postMultVal').textContent = postMult.toFixed(2);
+    return { followers, smart_followers, posts, SF, postMult };
+  }
+
+  function addRow(obj){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input name=url placeholder=https://x.com/... style="width:100%" /></td>
+      <td><input name=impressions type=number min=0 value=${obj?.impressions||0}></td>
+      <td><input name=likes type=number min=0 value=${obj?.likes||0}></td>
+      <td><input name=retweets type=number min=0 value=${obj?.retweets||0}></td>
+      <td><input name=quotes type=number min=0 value=${obj?.quotes||0}></td>
+      <td><input name=seng type=number min=0 value=${obj?.smart_engagement||0}></td>
+      <td class=mono data-erpct>0.00</td>
+      <td class=mono data-srm>0.000</td>
+      <td class=mono data-score>0</td>
+      <td><span class="pill" data-status>Ok</span></td>
+      <td><button class="btn" data-del>X</button></td>`;
+    $('#linksTable tbody').appendChild(tr);
+    tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); });
+    tr.querySelectorAll('input').forEach(inp=> inp.addEventListener('input', recalc));
+    return tr;
+  }
+
+  function computeRow(row, g){
+    const read = n => +row.querySelector(`[name=${n}]`).value || 0;
+    const impressions = Math.max(0, read('impressions'));
+    const likes = Math.max(0, read('likes'));
+    const rts = Math.max(0, read('retweets'));
+    const quotes = Math.max(0, read('quotes'));
+    const sengIn = Math.max(0, read('seng'));
+
+    const SRM = Math.min(1, impressions/100000);
+    const qW = 4 + 2*SRM;
+    const ENG = likes + 3*rts + qW*quotes;
+    const ERpct = impressions>0 ? (likes+rts+quotes)/impressions*100 : 0;
+    const EngObs = Math.max(ENG, (ERpct/100)*impressions);
+    const ER_cap = 0.01 + 0.04*SRM;
+    const EffEng = Math.min(EngObs, impressions*ER_cap);
+    const Clamp = EngObs>0 ? EffEng/EngObs : 0;
+    const SENG = Math.min(sengIn, 0.5*EffEng);
+    const QE = Math.min(Math.log(1 + impressions/Math.max(g.followers,1)), 2.0) * SRM;
+    const IMP = Math.sqrt(impressions);
+    const erMult = Math.min(0.90 + 2*Math.min(ERpct/100, 0.05), 1.0);
+    const engageBlock = (((ENG*0.7)*Clamp) + (SENG*150)) * Math.pow(SRM, 1.5);
+    const baseScore = (g.SF*500) + (IMP*10) + engageBlock + (QE*120);
+    let finalScore = baseScore * erMult * g.postMult;
+
+    const ERobs = impressions>0 ? (EngObs/impressions)*100 : 0;
+    let statusTxt = I18N[LANG].statusOK; let eligible = true; let penalized=false; let dq=false;
+    if(ERobs > 20){ finalScore=0; statusTxt = I18N[LANG].statusDQ; eligible=false; dq=true; }
+    if(ERpct > 10 && impressions < 50000){ finalScore *= 0.30; statusTxt = statusTxt===I18N[LANG].statusOK? I18N[LANG].statusPenalty : statusTxt + ' + ' + I18N[LANG].statusPenalty; penalized=true; }
+    if(g.posts < 2 || impressions <= 0){ eligible=false; statusTxt = statusTxt===I18N[LANG].statusOK? I18N[LANG].statusIneligible : statusTxt + ' + ' + I18N[LANG].statusIneligible; }
+
+    row.querySelector('[data-erpct]').textContent = ERpct ? ERpct.toFixed(2) : '0.00';
+    row.querySelector('[data-srm]').textContent = SRM.toFixed(3);
+    row.querySelector('[data-score]').textContent = fmt(finalScore, 2);
+    const badge = row.querySelector('[data-status]');
+    badge.textContent = statusTxt; badge.className = 'pill ' + (dq ? 'bad' : (statusTxt!==I18N[LANG].statusOK ? 'warn' : 'good'));
+
+    const likeShare = ENG>0 ? likes/ENG : 0;
+    const spreadShare = ENG>0 ? (3*rts + qW*quotes)/ENG : 0;
+
+    return { finalScore, eligible, impressions, ERpct, SRM, SENG, EffEng, likeShare, spreadShare, QE, penalized, dq };
+  }
+
+  function recalc(){
+    const g = globals();
+    let sumScore = 0, totalScore = 0, rows=0, totImpr=0, sumER=0, sumSRM=0, sumSENGshare=0, sumLikeShare=0, sumSpreadShare=0, penalizedCount=0, dqCount=0;
+    $('#linksTable tbody').querySelectorAll('tr').forEach(row=>{
+      const r = computeRow(row, g); rows++;
+      totalScore += r.finalScore; if(r.eligible) sumScore += r.finalScore;
+      totImpr += r.impressions; sumER += r.ERpct; sumSRM += r.SRM; sumLikeShare += r.likeShare; sumSpreadShare += r.spreadShare; const denom = r.EffEng>0 ? 0.5*r.EffEng : 0; if(denom>0) sumSENGshare += Math.min(r.SENG/denom,1); if(r.penalized) penalizedCount++; if(r.dq) dqCount++;
+    });
+    $('#sumScore').textContent = fmt(sumScore,2); $('#totalScore').textContent = fmt(totalScore,2); $('#statPostsVal').textContent = rows;
+
+    const rank = estimateRank(sumScore); $('#rankVsSS2').textContent = rank<=SS2.n ? `#${rank}/${SS2.n}` : `>${SS2.n}`;
+    const t = I18N[LANG];
+    $('#ss2stats').innerHTML = `${t.youScore}: <b class=mono>${fmt(sumScore,2)}</b> · ${t.gates}: ${t.top(100)} <span class=mono>${fmt(SS2.p100)}</span> | ${t.top(200)} <span class=mono>${fmt(SS2.p200)}</span> | ${t.top(300)} <span class=mono>${fmt(SS2.p300)}</span> | ${t.top(500)} <span class=mono>${fmt(SS2.p500)}</span>`;
+
+    const tips = [];
+    const avgER = rows? sumER/rows : 0; const avgSRM = rows? sumSRM/rows : 0; const avgLike = rows? sumLikeShare/rows : 0; const avgSpread = rows? sumSpreadShare/rows : 0; const avgSENGshare = rows? sumSENGshare/rows : 0; const gFollowers = Math.max(1, +$('#followers').value||1);
+    if((+$('#posts').value||0) < 20) tips.push(t.tips.postMore);
+    if(avgSRM < 1) tips.push(t.tips.raiseImpr);
+    if(penalizedCount>0) tips.push(t.tips.avoidPenalty);
+    if(dqCount>0) tips.push(t.tips.dqWarn);
+    if(avgER < 1) tips.push(t.tips.improveER);
+    if(avgLike > 0.7 && avgSpread < 0.3) tips.push(t.tips.balanceMix);
+    if(avgSENGshare < 0.5) tips.push(t.tips.boostSmart);
+    if(totImpr/gFollowers < 1) tips.push(t.tips.growQE);
+    $('#tipsBox').innerHTML = tips.length ? `<ul>${tips.map(s=>`<li>${s}</li>`).join('')}</ul>` : '<i>No tips. Metrics look balanced</i>';
+  }
+
+  function estimateRank(score){
+    if(score<=0) return SS2.n+1;
+    const anchors = [ [SS2.p500,500], [SS2.p300,300], [SS2.p200,200], [SS2.p100,100] ].sort((a,b)=>a[0]-b[0]);
+    if(score <= anchors[0][0]){ const a=0, b=1; const r = anchors[a][1] + (anchors[b][1]-anchors[a][1]) * ((anchors[0][0]-score)/Math.max(anchors[0][0]-0,1)); return Math.round(Math.min(SS2.n, Math.max(1,r))); }
+    for(let i=0;i<anchors.length-1;i++){
+      const [s1,r1] = anchors[i]; const [s2,r2]=anchors[i+1]; if(score>=s1 && score<=s2){ const t = (score-s1)/(s2-s1); const r = r1 + (r2-r1)*t; return Math.round(r); }
     }
+    const sTop = anchors[anchors.length-1][0]; if(score >= sTop){ const extra = Math.max(0, (score - sTop)/sTop); const r = 100 - Math.min(60, Math.sqrt(extra)*60); return Math.max(1, Math.round(r)); }
+    return SS2.n+1;
+  }
 
-    function estimateRank(score){
-      if(score >= SS2.max) return 1;
-      if(score <= SS2.min) return SS2.n;
-      const segs=[
-        {r0:1,r1:100,s0:SS2.max,s1:SS2.p100},
-        {r0:100,r1:200,s0:SS2.p100,s1:SS2.p200},
-        {r0:200,r1:300,s0:SS2.p200,s1:SS2.p300},
-        {r0:300,r1:500,s0:SS2.p300,s1:SS2.p500},
-      ];
-      for(const seg of segs){
-        if(score >= seg.s1){
-          const ratio = (seg.s0 - score) / (seg.s0 - seg.s1);
-          return Math.max(seg.r0, Math.min(seg.r1, Math.floor(seg.r0 + ratio*(seg.r1-seg.r0))));
-        }
-      }
-      return SS2.n;
-    }
+  $('#addRow').addEventListener('click', ()=>{ addRow(); recalc(); });
+  $('#calcAll').addEventListener('click', recalc);
+  $('#clearAll').addEventListener('click', ()=>{ $('#linksTable tbody').innerHTML=''; recalc(); });
+  ['#followers','#smartFollowers','#posts'].forEach(s=> $(s).addEventListener('input', recalc));
 
-    function computeRow(row, g){
-      const read = n => +row.querySelector(`[name=${n}]`).value || 0;
-      const impressions = Math.max(0, read('impressions'));
-      const likes = Math.max(0, read('likes'));
-      const rts = Math.max(0, read('retweets'));
-      const quotes = Math.max(0, read('quotes'));
-      const sengIn = Math.max(0, read('seng'));
+  function rowsFromObjects(list){ list.forEach(o=> addRow(o)); recalc(); }
 
-      const SRM = Math.min(1, impressions/100000);
-      const qW = 4 + 2*SRM;
-      const ENG = likes + 3*rts + qW*quotes;
-      const ERpct = impressions>0 ? (likes+rts+quotes)/impressions*100 : 0;
-      const EngObs = Math.max(ENG, (ERpct/100)*impressions);
-      const ER_cap = 0.01 + 0.04*SRM;
-      const EffEng = Math.min(EngObs, impressions*ER_cap);
-      const Clamp = EngObs>0 ? EffEng/EngObs : 0;
-      const SENG = Math.min(sengIn, 0.5*EffEng);
-      const QE = Math.min(Math.log(1 + impressions/Math.max(g.followers,1)), 2.0) * SRM;
-      const IMP = Math.sqrt(impressions);
-      const erMult = Math.min(0.90 + 2*Math.min(ERpct/100, 0.05), 1.0);
-      const engageBlock = (((ENG*0.7)*Clamp) + (SENG*150)) * Math.pow(SRM, 1.5);
-      const baseScore = (g.SF*500) + (IMP*10) + engageBlock + (QE*120);
-      let finalScore = baseScore * erMult * g.postMult;
+  // OAuth 2 PKCE helper
+  const b64url = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  async function sha256(str){ const enc = new TextEncoder().encode(str); return await crypto.subtle.digest('SHA-256', enc); }
+  function rnd(n=32){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
 
-      const ERobs = impressions>0 ? (EngObs/impressions)*100 : 0;
-      let statusKey = 'statusOK', statusTxt = I18N[LANG].statusOK, eligible = true, penalized=false, dq=false;
-      if(ERobs > 20){ finalScore=0; statusKey='statusDQ'; statusTxt=I18N[LANG].statusDQ; eligible=false; dq=true; }
-      if(ERpct > 10 && impressions < 50000){ finalScore *= 0.30; statusTxt = (statusTxt===I18N[LANG].statusOK? I18N[LANG].statusPenalty : statusTxt + ' + ' + I18N[LANG].statusPenalty); penalized=true; }
-      if(g.posts < 2 || impressions <= 0){ eligible=false; statusTxt = (statusTxt===I18N[LANG].statusOK? I18N[LANG].statusIneligible : statusTxt + ' + ' + I18N[LANG].statusIneligible); }
+  const OAUTH = { // fill these three to go live
+    authorizeBase:'https://twitter.com/i/oauth2/authorize',
+    tokenProxy:'https://YOUR-WORKER.workers.dev/x/oauth/token', // Cloudflare Worker endpoint
+    clientId:'YOUR_X_CLIENT_ID',
+    redirectUri: location.origin + location.pathname // allow same file hosted under your domain
+  };
+  const OAUTH_SCOPES = ['tweet.read','users.read','offline.access'];
 
-      row.querySelector('[data-erpct]').textContent = ERpct ? ERpct.toFixed(2) : '0.00';
-      row.querySelector('[data-srm]').textContent = SRM.toFixed(3);
-      row.querySelector('[data-score]').textContent = fmt(finalScore, 2);
-      const badge = row.querySelector('[data-status]');
-      badge.textContent = statusTxt; badge.dataset.statusKey = statusKey;
-      badge.className = 'pill ' + (dq ? 'bad' : (statusTxt!==I18N[LANG].statusOK ? 'warn' : 'good'));
+  let X_ACCESS_TOKEN=null, X_REFRESH_TOKEN=null, X_HANDLE=null, X_NEXT_TOKEN=null;
 
-      const likeShare = ENG>0 ? likes/ENG : 0;
-      const spreadShare = ENG>0 ? (3*rts + qW*quotes)/ENG : 0;
+  async function xStartLogin(){
+    $('#xAuthStatus').textContent = I18N[LANG].xAuthBusy;
+    const verifier = rnd(48); const challenge = b64url(await sha256(verifier)); const state=rnd(24);
+    sessionStorage.setItem('x_pkce_verifier', verifier); sessionStorage.setItem('x_pkce_state', state);
+    const p = new URLSearchParams({ response_type:'code', client_id:OAUTH.clientId, redirect_uri:OAUTH.redirectUri, scope:OAUTH_SCOPES.join(' '), state, code_challenge:challenge, code_challenge_method:'S256' });
+    location.href = `${OAUTH.authorizeBase}?${p.toString()}`;
+  }
+  async function xHandleCallback(){
+    const url = new URL(location.href); const code=url.searchParams.get('code'); const state=url.searchParams.get('state'); if(!code) return;
+    const expect = sessionStorage.getItem('x_pkce_state'); const verifier = sessionStorage.getItem('x_pkce_verifier');
+    if(!state || state!==expect){ $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; history.replaceState({}, document.title, location.pathname); return; }
+    try{
+      const r = await fetch(OAUTH.tokenProxy, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code, code_verifier:verifier, client_id:OAUTH.clientId, redirect_uri:OAUTH.redirectUri }) });
+      if(!r.ok){ $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; history.replaceState({}, document.title, location.pathname); return; }
+      const tok = await r.json(); X_ACCESS_TOKEN = tok.access_token||null; X_REFRESH_TOKEN = tok.refresh_token||null;
+      const me = await fetch('https://api.twitter.com/2/users/me?user.fields=username', { headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` } });
+      if(me.ok){ const js = await me.json(); X_HANDLE = '@' + (js.data?.username||'x'); $('#xAuthStatus').textContent = I18N[LANG].xAuthOk(X_HANDLE); $('#xLoginBtn').style.display='none'; $('#xLogoutBtn').style.display=''; $('#xFetchBtn').disabled=false; }
+      else { $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; }
+    }catch(e){ $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; }
+    history.replaceState({}, document.title, location.pathname);
+  }
+  function xLogout(){ X_ACCESS_TOKEN=null; X_REFRESH_TOKEN=null; X_HANDLE=null; $('#xAuthStatus').textContent=I18N[LANG].xAuthReady; $('#xLoginBtn').style.display=''; $('#xLogoutBtn').style.display='none'; $('#xFetchBtn').disabled=true; $('#xMoreBtn').disabled=true; }
 
-      return { finalScore, eligible, impressions, ERpct, SRM, SENG, EffEng, likeShare, spreadShare, QE, penalized, dq };
-    }
+  async function xFetch(query, nextToken){
+    const estER = Math.max(0.1, +$('#xEstimate').value || 2.5); const status=$('#xApiStatus'); if(!X_ACCESS_TOKEN){ status.textContent = I18N[LANG].xAuthReady; return; }
+    const params = new URLSearchParams({ query, 'tweet.fields':'public_metrics,created_at,entities', expansions:'author_id', 'user.fields':'username,public_metrics', max_results:'50' }); if(nextToken) params.set('next_token', nextToken);
+    status.textContent = 'Fetching…';
+    try{
+      const resp = await fetch('https://api.twitter.com/2/tweets/search/recent?' + params.toString(), { headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` } });
+      if(!resp.ok){ const txt = await resp.text(); status.textContent = `HTTP ${resp.status} ${txt.slice(0,160)}`; return; }
+      const data = await resp.json(); const usersById = new Map((data.includes?.users||[]).map(u=>[u.id,u]));
+      const items = (data.data||[]).map(tw=>{ const u=usersById.get(tw.author_id); const username=u?.username||'x'; const url=`https://x.com/${username}/status/${tw.id}`; const pm=tw.public_metrics||{}; const likes=pm.like_count||0, retweets=pm.retweet_count||0, quotes=pm.quote_count||0; const engagements = likes+retweets+quotes; const impressions = engagements>0 ? Math.round(engagements/(estER/100)) : 0; return { url, impressions, likes, retweets, quotes, smart_engagement:0 }; });
+      if(items.length) rowsFromObjects(items);
+      X_NEXT_TOKEN = data.meta?.next_token||null; $('#xMoreBtn').disabled = !X_NEXT_TOKEN; status.textContent = `${data.meta?.result_count||0} tweets · next ${X_NEXT_TOKEN?'yes':'no'}`;
+    }catch(e){ status.textContent = 'Network or CORS error'; }
+  }
 
-    function recalc(){
-      const g = globals();
-      let sumScore = 0, totalScore = 0, rows=0,
-          totImpr=0, sumER=0, sumSRM=0, sumSENGshare=0, sumLikeShare=0, sumSpreadShare=0,
-          penalizedCount=0, dqCount=0;
-      document.querySelectorAll('#linksTable tbody tr').forEach(row=>{
-        const r = computeRow(row, g); rows++;
-        totalScore += r.finalScore; if(r.eligible){ sumScore += r.finalScore; }
-        totImpr += r.impressions; sumER += r.ERpct; sumSRM += r.SRM; sumLikeShare += r.likeShare; sumSpreadShare += r.spreadShare;
-        const denom = r.EffEng>0 ? 0.5*r.EffEng : 0; if(denom>0) sumSENGshare += Math.min(r.SENG/denom,1);
-        if(r.penalized) penalizedCount++; if(r.dq) dqCount++;
-      });
-      document.querySelector('#sumScore').textContent = fmt(sumScore,2);
-      document.querySelector('#totalScore').textContent = fmt(totalScore,2);
-      const rank = estimateRank(sumScore);
-      document.querySelector('#rankVsSS2').textContent = rank<=SS2.n ? `#${rank}/${SS2.n}` : `>${SS2.n}`;
-      const t = I18N[LANG];
-      document.querySelector('#ss2stats').innerHTML = `${t.youScore}: <b class="mono">${fmt(sumScore,2)}</b> · ${t.gates}: ${t.top(100)} <span class=\"mono\">${fmt(SS2.p100)}</span> | ${t.top(200)} <span class=\"mono\">${fmt(SS2.p200)}</span> | ${t.top(300)} <span class=\"mono\">${fmt(SS2.p300)}</span> | ${t.top(500)} <span class=\"mono\">${fmt(SS2.p500)}</span>`;
+  $('#xLoginBtn').addEventListener('click', xStartLogin);
+  $('#xLogoutBtn').addEventListener('click', xLogout);
+  $('#xFetchBtn').addEventListener('click', ()=>{ X_NEXT_TOKEN=null; xFetch('(@zama_fhe OR #ZamaCreatorProgram) -is:reply', null); });
+  $('#xMoreBtn').addEventListener('click', ()=>{ if(X_NEXT_TOKEN) xFetch('(@zama_fhe OR #ZamaCreatorProgram) -is:reply', X_NEXT_TOKEN); });
 
-      // build tips
-      const tips = [];
-      const avgER = rows? sumER/rows : 0;
-      const avgSRM = rows? sumSRM/rows : 0;
-      const avgLike = rows? sumLikeShare/rows : 0;
-      const avgSpread = rows? sumSpreadShare/rows : 0;
-      const avgSENGshare = rows? sumSENGshare/rows : 0;
-
-      if((+document.querySelector('#posts').value||0) < 20) tips.push(t.tips.postMore);
-      if(avgSRM < 1) tips.push(t.tips.raiseImpr);
-      if(penalizedCount>0) tips.push(t.tips.avoidPenalty);
-      if(dqCount>0) tips.push(t.tips.dqWarn);
-      if(avgER < 1) tips.push(t.tips.improveER);
-      if(avgLike > 0.7 && avgSpread < 0.3) tips.push(t.tips.balanceMix);
-      if(avgSENGshare < 0.5) tips.push(t.tips.boostSmart);
-      const gFollowers = Math.max(1, +document.querySelector('#followers').value||1);
-      if(totImpr/gFollowers < 1) tips.push(t.tips.growQE);
-
-      document.querySelector('#tipsBox').innerHTML = tips.length ? `<ul>${tips.map(s=>`<li>${s}</li>`).join('')}</ul>` : '<i>No tips. Metrics look balanced</i>';
-    }
-
-    function addRow(prefill={}){
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input name="url" type="text" placeholder="https://..." value="${prefill.url||''}"></td>
-        <td class="right"><input name="impressions" type="number" min="0" step="1" value="${prefill.impressions||0}"></td>
-        <td class="right"><input name="likes" type="number" min="0" step="1" value="${prefill.likes||0}"></td>
-        <td class="right"><input name="retweets" type="number" min="0" step="1" value="${prefill.retweets||0}"></td>
-        <td class="right"><input name="quotes" type="number" min="0" step="1" value="${prefill.quotes||0}"></td>
-        <td class="right"><input name="seng" type="number" min="0" step="0.01" value="${prefill.seng||0}"></td>
-        <td class="right mono" data-erpct>0.00</td>
-        <td class="right mono" data-srm>0.000</td>
-        <td class="right mono" data-score>0</td>
-        <td><span class="pill good" data-status>Ok</span></td>
-        <td><button class="btn ghost" data-del>×</button></td>`;
-      document.querySelector('#linksTable tbody').appendChild(tr);
-      tr.querySelectorAll('input').forEach(i=>i.addEventListener('input', recalc));
-      tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); });
-      recalc();
-    }
-
-    function buildThead(){
-      const tr = document.getElementById('theadRow');
-      tr.innerHTML = '';
-      for(const h of I18N[LANG].th){ const th=document.createElement('th'); th.textContent=h; tr.appendChild(th); }
-    }
-
-    // events
-    document.getElementById('btnEN').onclick = ()=>{ LANG='en'; renderStatic(); buildThead(); recalc(); };
-    document.getElementById('btnVI').onclick = ()=>{ LANG='vi'; renderStatic(); buildThead(); recalc(); };
-    document.getElementById('followers').addEventListener('input', recalc);
-    document.getElementById('smartFollowers').addEventListener('input', recalc);
-    document.getElementById('posts').addEventListener('input', recalc);
-    document.getElementById('addRow').addEventListener('click', ()=>addRow());
-    document.getElementById('calcAll').addEventListener('click', recalc);
-    document.getElementById('clearAll').addEventListener('click', ()=>{ document.querySelector('#linksTable tbody').innerHTML=''; recalc(); });
-
-    // init
-    renderStatic(); buildThead(); addRow();
-    recalc();
-  </script>
+  // init
+  renderStatic(); buildThead(); addRow(); recalc(); xHandleCallback();
+</script>
 </body>
 </html>
