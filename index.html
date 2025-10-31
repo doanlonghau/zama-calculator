@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bảng tính điểm social</title>
+  <title>Social Score Calculator</title>
   <style>
-    :root { --bg:#0a0a06; --card:#12100a; --muted:#beb38a; --text:#fff7d6; --accent:#ffd84d; --good:#7bd88a; --warn:#ffcc00; --bad:#ff7a7a; --border:#ffd208; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px }
+    :root { --bg:#0a0a06; --card:#12100a; --muted:#beb38a; --text:#fff7d6; --accent:#ffd84d; --good:#7bd88a; --warn:#ffcc00; --bad:#ff7a7a; --border:#3a300f; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:16px }
     *{ box-sizing:border-box }
-    body{ margin:0; background:radial-gradient(1200px 600px at 20% -10%, #1f1900 0%, transparent 60%), linear-gradient(180deg,#0a0a06,#0a0a06); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial; padding:24px; letter-spacing:.2px }
-    h1,h2,h3{ margin:0 0 12px } h1{ font-size:24px } h2{ font-size:18px; color:var(--muted) }
+    body{ margin:0; background:radial-gradient(1200px 600px at 20% -10%, #1f1900 0%, transparent 60%), linear-gradient(180deg,#0a0a06,#0a0a06); color:var(--text); font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial; padding:24px }
+    h1,h2{ margin:0 0 12px } h1{ font-size:24px } h2{ font-size:18px; color:var(--muted) }
     .wrap{ max-width:1100px; margin:0 auto; display:grid; gap:16px }
     .grid{ display:grid; gap:16px } .two{ grid-template-columns:repeat(2,minmax(0,1fr)) } .three{ grid-template-columns:repeat(3,minmax(0,1fr)) }
     .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px }
@@ -19,89 +19,89 @@
     input[type="number"]:focus,input[type="text"]:focus,textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,216,77,.15) }
     .btn{ display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:#1a1407; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600 }
     .btn:hover{ background:#221a09 } .btn.primary{ background:linear-gradient(135deg,#ffdb58,#ffd84d); color:#3a2f00; border:none } .btn.primary:hover{ filter:brightness(1.03) } .btn.ghost{ background:transparent }
+    .langbar{ display:flex; justify-content:center; gap:8px; margin-bottom:8px }
+    .active{ outline:2px solid var(--accent) }
     table{ width:100%; border-collapse:collapse; overflow:hidden; border-radius:12px; border:1px solid var(--border) }
     th,td{ padding:10px 8px; text-align:left; border-bottom:1px solid var(--border) } th{ background:#1c1606; color:var(--muted); font-weight:700; position:sticky; top:0; z-index:1 }
     tr:hover td{ background:rgba(255,216,77,.06) } td input{ width:100% }
     .pill{ display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700 }
     .pill.good{ background:rgba(123,216,138,.14); color:#9af0ac } .pill.warn{ background:rgba(255,204,0,.14); color:var(--warn) } .pill.bad{ background:rgba(255,122,122,.14); color:var(--bad) }
     .right{ text-align:right } .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,Liberation Mono,monospace }
-    .footer{ color:var(--muted); font-size:12px; text-align:center; margin-top:8px }
     .intro{ display:flex; align-items:center; gap:12px; justify-content:center; background:#1a1407; padding:12px; border-radius:12px; border:1px solid var(--border); box-shadow:var(--shadow) }
     .intro img{ height:40px }
+    .footer{ color:var(--muted); font-size:12px; text-align:center; margin-top:8px }
     @media (max-width:880px){ .two{ grid-template-columns:1fr } .row{ grid-template-columns:1fr } }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- banner giới thiệu đặt ngay đầu body -->
     <div class="intro">
       <img src="https://cdn.prod.website-files.com/61bc21e3a843412266a08eb3/68417dce00c33fce2253fc6e_Untitled%20design%20(1).svg" alt="logo" />
-      <div>
-        <b>Tool này được làm bởi Long Hậu.</b> Dữ liệu chỉ có giá trị tham khảo.<br>
-        Follow <a href="https://x.com/doanlonghau" target="_blank" style="color:var(--accent)">@doanlonghau</a> ·
-        <a href="https://x.com/cryptoluaga" target="_blank" style="color:var(--accent)">@cryptoluaga</a>
-      </div>
+      <div id="introText"></div>
+    </div>
+
+    <div class="langbar">
+      <button id="btnEN" class="btn active">English</button>
+      <button id="btnVI" class="btn">Tiếng Việt</button>
     </div>
 
     <header class="grid two">
       <div class="card">
-        <h1> Thông số tài khoản</h1>
-        <div class="muted">Nhập thông số chung, thêm các link và xem điểm chi tiết, tổng điểm</div>
+        <h1 id="title"></h1>
+        <div id="subtitle" class="muted"></div>
       </div>
       <div class="card grid three">
         <div>
-          <div class="muted">Bài đăng</div>
+          <div class="muted" id="statPostsLabel"></div>
           <div id="postCountStat" class="mono" style="font-size:22px">0</div>
         </div>
         <div>
-          <div class="muted">Tổng điểm</div>
+          <div class="muted" id="statTotalLabel"></div>
           <div id="totalScore" class="mono" style="font-size:22px">0</div>
         </div>
         <div>
-          <div class="muted">Xếp hạng so với Season 2</div>
-          <div id="rankVsSS2" class="mono" style="font-size:22px">đang khởi tạo…</div>
+          <div class="muted" id="statRankLabel"></div>
+          <div id="rankVsSS2" class="mono" style="font-size:22px">…</div>
         </div>
       </div>
     </header>
 
     <section class="card">
-      <h2>Thông số chung</h2>
-      <div class="row"><label for="followers">Followers</label><input id="followers" type="number" min="0" step="1" value="0" /></div>
-      <div class="row"><label for="smartFollowers">Smart followers</label><input id="smartFollowers" type="number" min="0" step="1" value="0" /></div>
-      <div class="row"><label for="posts">Số bài đăng</label><input id="posts" type="number" min="0" step="1" value="0" /></div>
-      <div class="row"><label>Hệ số chung</label><div class="muted mono" id="derivedGlobals">SF 0, postMult 1.00</div></div>
+      <h2 id="globalsHeader"></h2>
+      <div class="row">
+        <label for="followers" id="lblFollowers"></label>
+        <input id="followers" type="number" min="0" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label for="smartFollowers" id="lblSmartFollowers"></label>
+        <input id="smartFollowers" type="number" min="0" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label for="posts" id="lblPosts"></label>
+        <input id="posts" type="number" min="0" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label id="lblDerived"></label>
+        <div class="muted mono" id="derivedGlobals">SF 0, postMult 1.00</div>
+      </div>
     </section>
 
     <section class="card">
       <div style="display:flex; gap:8px; justify-content:space-between; align-items:center; margin-bottom:8px">
-        <h2>Danh sách link</h2>
+        <h2 id="linksHeader"></h2>
         <div style="display:flex; gap:8px">
-          <button id="addRow" class="btn">Thêm link</button>
-          <button id="calcAll" class="btn primary">Tính toàn bộ</button>
-          <button id="clearAll" class="btn ghost">Xóa tất cả</button>
+          <button id="addRow" class="btn"></button>
+          <button id="calcAll" class="btn primary"></button>
+          <button id="clearAll" class="btn ghost"></button>
         </div>
       </div>
       <div style="overflow:auto">
         <table id="linksTable">
-          <thead>
-            <tr>
-              <th style="min-width:180px">Link</th>
-              <th class="right">Impr</th>
-              <th class="right">Likes</th>
-              <th class="right">RT</th>
-              <th class="right">Quotes</th>
-              <th class="right">Smart eng</th>
-              <th class="right">ER %</th>
-              <th class="right">SRM</th>
-              <th class="right">Score</th>
-              <th>Trạng thái</th>
-              <th></th>
-            </tr>
-          </thead>
+          <thead><tr id="theadRow"></tr></thead>
           <tbody></tbody>
           <tfoot>
             <tr>
-              <th colspan="7" class="right">Tổng hợp đủ điều kiện</th>
+              <th colspan="7" class="right" id="sumLabel"></th>
               <th class="right" id="sumScore" colspan="2">0</th>
               <th colspan="2"></th>
             </tr>
@@ -111,58 +111,247 @@
     </section>
 
     <section class="card">
-      <h2>So với Season 2</h2>
-      <div class="muted" style="margin-bottom:8px">Dữ liệu mùa 2 đã được nhúng sẵn. Công cụ ước lượng hạng dựa trên ngưỡng Top 100, 200, 300, 500.</div>
+      <h2 id="ss2Header"></h2>
+      <div id="ss2Desc" class="muted" style="margin-bottom:8px"></div>
       <div id="ss2stats" class="muted"></div>
     </section>
 
-    <div class="footer">Không gửi dữ liệu ra ngoài</div>
+    <div class="footer" id="footerText"></div>
   </div>
 
   <script>
-    // ngưỡng Season 2 nhúng sẵn
-    const SS2_THRESH = { n:500, p100:11260, p200:7013, p300:4694, p500:2897, max:65476, min:2897 };
+    // thresholds from Season 2 (embedded)
+    const SS2 = { n:500, p100:11260, p200:7013, p300:4694, p500:2897, max:65476, min:2897 };
 
-    const els = {
-      followers: document.getElementById('followers'), smartFollowers: document.getElementById('smartFollowers'), posts: document.getElementById('posts'),
-      derivedGlobals: document.getElementById('derivedGlobals'), addRow: document.getElementById('addRow'), calcAll: document.getElementById('calcAll'), clearAll: document.getElementById('clearAll'),
-      table: document.getElementById('linksTable').querySelector('tbody'), sumScore: document.getElementById('sumScore'), totalScore: document.getElementById('totalScore'), postCountStat: document.getElementById('postCountStat'), rankVsSS2: document.getElementById('rankVsSS2'), ss2stats: document.getElementById('ss2stats'),
+    // i18n
+    const I18N = {
+      en: {
+        intro: "Tool by Long Hậu – data for reference only. Follow <a href='https://x.com/doanlonghau' target='_blank' style='color:var(--accent)'>@doanlonghau</a> · <a href='https://x.com/cryptoluaga' target='_blank' style='color:var(--accent)'>@cryptoluaga</a>",
+        title: "Social score calculator",
+        subtitle: "Enter globals, add post links, see per‑post and total scores",
+        statPosts: "posts",
+        statTotal: "total score",
+        statRank: "rank vs season 2",
+        globalsHeader: "Global parameters",
+        followers: "followers",
+        smartFollowers: "smart followers",
+        posts: "post count",
+        derived: "derived",
+        linksHeader: "Post links",
+        addLink: "Add",
+        calcAll: "Recalculate",
+        clearAll: "Clear",
+        th: ["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Status",""],
+        sumLabel: "eligible total",
+        ss2Header: "Season 2 comparison",
+        ss2Desc: "Embedded S2 thresholds. Ranking is estimated from Top 100/200/300/500 gates.",
+        youScore: "Your score",
+        gates: "Gates",
+        top: n=>`Top ${n}`,
+        nearAbove: "nearest above",
+        nearBelow: "nearest below",
+        statusOK: "Ok",
+        statusDQ: "DQ observed ER > 20%",
+        statusPenalty: "Penalty 0.30",
+        statusIneligible: "Ineligible",
+        footer: "No data is sent anywhere"
+      },
+      vi: {
+        intro: "Tool này được làm bởi Long Hậu, dữ liệu chỉ có giá trị tham khảo. Follow <a href='https://x.com/doanlonghau' target='_blank' style='color:var(--accent)'>@doanlonghau</a> · <a href='https://x.com/cryptoluaga' target='_blank' style='color:var(--accent)'>@cryptoluaga</a>",
+        title: "Bảng tính điểm social",
+        subtitle: "Nhập thông số chung, thêm link và xem điểm từng bài, tổng điểm",
+        statPosts: "bài đăng",
+        statTotal: "tổng điểm",
+        statRank: "xếp hạng so với ss2",
+        globalsHeader: "Thông số chung",
+        followers: "followers",
+        smartFollowers: "smart followers",
+        posts: "số bài đăng",
+        derived: "hệ số chung",
+        linksHeader: "Danh sách link",
+        addLink: "Thêm link",
+        calcAll: "Tính toàn bộ",
+        clearAll: "Xóa tất cả",
+        th: ["Link","Impr","Likes","RT","Quotes","Smart eng","ER %","SRM","Score","Trạng thái",""],
+        sumLabel: "Tổng hợp đủ điều kiện",
+        ss2Header: "So với Season 2",
+        ss2Desc: "Ngưỡng Season 2 đã nhúng. Công cụ ước lượng hạng dựa vào các mốc Top 100, 200, 300, 500.",
+        youScore: "Điểm của bạn",
+        gates: "Ngưỡng",
+        top: n=>`Top ${n}`,
+        nearAbove: "Gần nhất phía trên",
+        nearBelow: "phía dưới",
+        statusOK: "Ok",
+        statusDQ: "DQ ER quan sát > 20%",
+        statusPenalty: "Phạt 0.30",
+        statusIneligible: "Không đủ điều kiện",
+        footer: "Không gửi dữ liệu ra ngoài"
+      }
     };
 
-    function fmt(x,d=2){ if(!isFinite(x)) return '0'; return Number(x).toLocaleString('vi-VN',{maximumFractionDigits:d, minimumFractionDigits:0}); }
+    let LANG = 'en';
+    const $ = sel => document.querySelector(sel);
 
-    function globals(){ const followers=Math.max(0,+els.followers.value||0); const smartFollowers=Math.max(0,+els.smartFollowers.value||0); const posts=Math.max(0,+els.posts.value||0); const SF=Math.min(Math.log10(smartFollowers+1),3.0); const postMult=1+0.02*Math.min(posts,20); els.derivedGlobals.textContent=`SF ${SF.toFixed(3)}, postMult ${postMult.toFixed(2)}`; els.postCountStat.textContent=fmt(posts); return {followers, smartFollowers, posts, SF, postMult}; }
+    function fmt(x, d=2){ if(!isFinite(x)) return '0'; return Number(x).toLocaleString(LANG==='vi'?'vi-VN':'en-US',{ maximumFractionDigits:d, minimumFractionDigits:0 }); }
 
-    function computeRow(row,g){ const read=n=>{const el=row.querySelector(`[name=${n}]`); return +el.value||0;}; const impressions=Math.max(0,read('impressions')); const likes=Math.max(0,read('likes')); const rts=Math.max(0,read('retweets')); const quotes=Math.max(0,read('quotes')); const sengIn=Math.max(0,read('seng'));
-      const SRM=Math.min(1, impressions/100000); const qW=4+2*SRM; const ENG=likes+3*rts+qW*quotes; const ERpct=impressions>0 ? (likes+rts+quotes)/impressions*100:0; const EngObs=Math.max(ENG,(ERpct/100)*impressions); const ER_cap=0.01+0.04*SRM; const EffEng=Math.min(EngObs, impressions*ER_cap); const Clamp=EngObs>0? EffEng/EngObs:0; const SENG=Math.min(sengIn, 0.5*EffEng); const QE=Math.min(Math.log(1+ impressions/Math.max(g.followers,1)),2.0)*SRM; const IMP=Math.sqrt(impressions); const erMult=Math.min(0.90+2*Math.min(ERpct/100,0.05),1.0); const engageBlock=(((ENG*0.7)*Clamp)+(SENG*150))*Math.pow(SRM,1.5); const baseScore=(g.SF*500)+(IMP*10)+engageBlock+(QE*120); let finalScore=baseScore*erMult*g.postMult;
-      const ERobs=impressions>0?(EngObs/impressions)*100:0; let status=''; let eligible=true; if(ERobs>20){ finalScore=0; status='DQ ER quan sát > 20%'; eligible=false; } if(ERpct>10 && impressions<50000){ finalScore*=0.30; status=status? status+' + phạt 0.30':'Phạt 0.30'; } if(g.posts<2 || impressions<=0){ eligible=false; status=status? status+' + không đủ điều kiện':'Không đủ điều kiện'; }
-      row.querySelector('[data-erpct]').textContent=ERpct? ERpct.toFixed(2):'0.00'; row.querySelector('[data-srm]').textContent=SRM.toFixed(3); row.querySelector('[data-score]').textContent=fmt(finalScore,2); const badge=row.querySelector('[data-status]'); badge.textContent=status||'Ok'; badge.className='pill '+(status.includes('DQ')?'bad': status? 'warn':'good');
+    function renderStatic(){
+      const t = I18N[LANG];
+      $('#introText').innerHTML = t.intro;
+      $('#title').textContent = t.title;
+      $('#subtitle').textContent = t.subtitle;
+      $('#statPostsLabel').textContent = t.statPosts;
+      $('#statTotalLabel').textContent = t.statTotal;
+      $('#statRankLabel').textContent = t.statRank;
+      $('#globalsHeader').textContent = t.globalsHeader;
+      $('#lblFollowers').textContent = t.followers;
+      $('#lblSmartFollowers').textContent = t.smartFollowers;
+      $('#lblPosts').textContent = t.posts;
+      $('#lblDerived').textContent = t.derived;
+      $('#linksHeader').textContent = t.linksHeader;
+      $('#addRow').textContent = t.addLink;
+      $('#calcAll').textContent = t.calcAll;
+      $('#clearAll').textContent = t.clearAll;
+      $('#sumLabel').textContent = t.sumLabel;
+      $('#ss2Header').textContent = t.ss2Header;
+      $('#ss2Desc').textContent = t.ss2Desc;
+      $('#footerText').textContent = t.footer;
+
+      // rebuild table head
+      const tr = document.getElementById('theadRow');
+      tr.innerHTML = '';
+      for(const h of t.th){ const th=document.createElement('th'); th.textContent=h; tr.appendChild(th); }
+
+      // update status pills text for existing rows
+      document.querySelectorAll('[data-status]').forEach(e=>{ if(e.dataset.statusKey){ e.textContent = t[e.dataset.statusKey]; } });
+
+      document.documentElement.lang = LANG==='vi' ? 'vi' : 'en';
+      $('#btnEN').classList.toggle('active', LANG==='en');
+      $('#btnVI').classList.toggle('active', LANG==='vi');
+    }
+
+    function globals(){
+      const followers = Math.max(0, +$('#followers').value||0);
+      const smartFollowers = Math.max(0, +$('#smartFollowers').value||0);
+      const posts = Math.max(0, +$('#posts').value||0);
+      const SF = Math.min(Math.log10(smartFollowers+1), 3.0);
+      const postMult = 1 + 0.02*Math.min(posts,20);
+      $('#derivedGlobals').textContent = `SF ${SF.toFixed(3)}, postMult ${postMult.toFixed(2)}`;
+      $('#postCountStat').textContent = fmt(posts);
+      return { followers, smartFollowers, posts, SF, postMult };
+    }
+
+    function estimateRank(score){
+      if(score >= SS2.max) return 1;
+      if(score <= SS2.min) return SS2.n;
+      const segs=[
+        {r0:1,r1:100,s0:SS2.max,s1:SS2.p100},
+        {r0:100,r1:200,s0:SS2.p100,s1:SS2.p200},
+        {r0:200,r1:300,s0:SS2.p200,s1:SS2.p300},
+        {r0:300,r1:500,s0:SS2.p300,s1:SS2.p500},
+      ];
+      for(const seg of segs){
+        if(score >= seg.s1){
+          const ratio = (seg.s0 - score) / (seg.s0 - seg.s1);
+          return Math.max(seg.r0, Math.min(seg.r1, Math.floor(seg.r0 + ratio*(seg.r1-seg.r0))));
+        }
+      }
+      return SS2.n;
+    }
+
+    function computeRow(row, g){
+      const read = n => +row.querySelector(`[name=${n}]`).value || 0;
+      const impressions = Math.max(0, read('impressions'));
+      const likes = Math.max(0, read('likes'));
+      const rts = Math.max(0, read('retweets'));
+      const quotes = Math.max(0, read('quotes'));
+      const sengIn = Math.max(0, read('seng'));
+
+      const SRM = Math.min(1, impressions/100000);
+      const qW = 4 + 2*SRM;
+      const ENG = likes + 3*rts + qW*quotes;
+      const ERpct = impressions>0 ? (likes+rts+quotes)/impressions*100 : 0;
+      const EngObs = Math.max(ENG, (ERpct/100)*impressions);
+      const ER_cap = 0.01 + 0.04*SRM;
+      const EffEng = Math.min(EngObs, impressions*ER_cap);
+      const Clamp = EngObs>0 ? EffEng/EngObs : 0;
+      const SENG = Math.min(sengIn, 0.5*EffEng);
+      const QE = Math.min(Math.log(1 + impressions/Math.max(g.followers,1)), 2.0) * SRM;
+      const IMP = Math.sqrt(impressions);
+      const erMult = Math.min(0.90 + 2*Math.min(ERpct/100, 0.05), 1.0);
+      const engageBlock = (((ENG*0.7)*Clamp) + (SENG*150)) * Math.pow(SRM, 1.5);
+      const baseScore = (g.SF*500) + (IMP*10) + engageBlock + (QE*120);
+      let finalScore = baseScore * erMult * g.postMult;
+
+      const ERobs = impressions>0 ? (EngObs/impressions)*100 : 0;
+      let statusKey = 'statusOK', statusTxt = I18N[LANG].statusOK, eligible = true;
+      if(ERobs > 20){ finalScore=0; statusKey='statusDQ'; statusTxt=I18N[LANG].statusDQ; eligible=false; }
+      if(ERpct > 10 && impressions < 50000){ finalScore *= 0.30; statusTxt = (statusTxt===I18N[LANG].statusOK? I18N[LANG].statusPenalty : statusTxt + ' + ' + I18N[LANG].statusPenalty); }
+      if(g.posts < 2 || impressions <= 0){ eligible=false; statusTxt = (statusTxt===I18N[LANG].statusOK? I18N[LANG].statusIneligible : statusTxt + ' + ' + I18N[LANG].statusIneligible); }
+
+      row.querySelector('[data-erpct]').textContent = ERpct ? ERpct.toFixed(2) : '0.00';
+      row.querySelector('[data-srm]').textContent = SRM.toFixed(3);
+      row.querySelector('[data-score]').textContent = fmt(finalScore, 2);
+      const badge = row.querySelector('[data-status]');
+      badge.textContent = statusTxt; badge.dataset.statusKey = statusKey;
+      badge.className = 'pill ' + (statusTxt.includes('DQ') ? 'bad' : (statusTxt!==I18N[LANG].statusOK ? 'warn' : 'good'));
+
       return { finalScore, eligible };
     }
 
-    function recalc(){ const g=globals(); let sumScore=0, totalScore=0; els.table.querySelectorAll('tr').forEach(row=>{ const {finalScore, eligible}=computeRow(row,g); totalScore+=finalScore; if(eligible) sumScore+=finalScore; }); els.sumScore.textContent=fmt(sumScore,2); els.totalScore.textContent=fmt(totalScore,2); updateRank(sumScore); }
+    function recalc(){
+      const g = globals();
+      let sumScore = 0, totalScore = 0;
+      document.querySelectorAll('#linksTable tbody tr').forEach(row=>{
+        const { finalScore, eligible } = computeRow(row, g);
+        totalScore += finalScore; if(eligible) sumScore += finalScore;
+      });
+      $('#sumScore').textContent = fmt(sumScore,2);
+      $('#totalScore').textContent = fmt(totalScore,2);
+      const rank = estimateRank(sumScore);
+      $('#rankVsSS2').textContent = rank<=SS2.n ? `#${rank}/${SS2.n}` : `>${SS2.n}`;
+      const t = I18N[LANG];
+      $('#ss2stats').innerHTML = `${t.youScore}: <b class="mono">${fmt(sumScore,2)}</b> · ${t.gates}: ${t.top(100)} <span class="mono">${fmt(SS2.p100)}</span> | ${t.top(200)} <span class="mono">${fmt(SS2.p200)}</span> | ${t.top(300)} <span class="mono">${fmt(SS2.p300)}</span> | ${t.top(500)} <span class="mono">${fmt(SS2.p500)}</span>`;
+    }
 
-    function estimateRank(score){ const t=SS2_THRESH; if(score>=t.max) return 1; if(score<=t.min) return t.n; const segs=[ {r0:1,r1:100,s0:t.max,s1:t.p100}, {r0:100,r1:200,s0:t.p100,s1:t.p200}, {r0:200,r1:300,s0:t.p200,s1:t.p300}, {r0:300,r1:500,s0:t.p300,s1:t.p500} ]; for(const seg of segs){ if(score>=seg.s1){ const ratio=(seg.s0-score)/(seg.s0-seg.s1); const rank=Math.floor(seg.r0+ ratio*(seg.r1-seg.r0)); return Math.max(seg.r0, Math.min(seg.r1, rank)); } } return t.n; }
+    function addRow(prefill={}){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input name="url" type="text" placeholder="https://..." value="${prefill.url||''}"></td>
+        <td class="right"><input name="impressions" type="number" min="0" step="1" value="${prefill.impressions||0}"></td>
+        <td class="right"><input name="likes" type="number" min="0" step="1" value="${prefill.likes||0}"></td>
+        <td class="right"><input name="retweets" type="number" min="0" step="1" value="${prefill.retweets||0}"></td>
+        <td class="right"><input name="quotes" type="number" min="0" step="1" value="${prefill.quotes||0}"></td>
+        <td class="right"><input name="seng" type="number" min="0" step="0.01" value="${prefill.seng||0}"></td>
+        <td class="right mono" data-erpct>0.00</td>
+        <td class="right mono" data-srm>0.000</td>
+        <td class="right mono" data-score>0</td>
+        <td><span class="pill good" data-status>Ok</span></td>
+        <td><button class="btn ghost" data-del>×</button></td>`;
+      document.querySelector('#linksTable tbody').appendChild(tr);
+      tr.querySelectorAll('input').forEach(i=>i.addEventListener('input', recalc));
+      tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); });
+      recalc();
+    }
 
-    function updateRank(my){ const t=SS2_THRESH; const rank=estimateRank(my); const within=rank<=t.n? `#${rank}/${t.n}`:`ngoài Top ${t.n}`; els.rankVsSS2.textContent=within; els.ss2stats.innerHTML=`<div>Điểm của bạn: <b class="mono">${fmt(my,2)}</b></div><div>Ngưỡng Top 100: <span class="mono">${fmt(t.p100)}</span> | Top 200: <span class="mono">${fmt(t.p200)}</span> | Top 300: <span class="mono">${fmt(t.p300)}</span> | Top 500: <span class="mono">${fmt(t.p500)}</span></div>`; }
+    function buildThead(){
+      const tr = document.getElementById('theadRow');
+      tr.innerHTML = '';
+      for(const h of I18N[LANG].th){ const th=document.createElement('th'); th.textContent=h; tr.appendChild(th); }
+    }
 
-    function addRow(prefill={}){ const tr=document.createElement('tr'); tr.innerHTML=`
-      <td><input name="url" type="text" placeholder="https://..." value="${prefill.url||''}"></td>
-      <td class="right"><input name="impressions" type="number" min="0" step="1" value="${prefill.impressions||0}"></td>
-      <td class="right"><input name="likes" type="number" min="0" step="1" value="${prefill.likes||0}"></td>
-      <td class="right"><input name="retweets" type="number" min="0" step="1" value="${prefill.retweets||0}"></td>
-      <td class="right"><input name="quotes" type="number" min="0" step="1" value="${prefill.quotes||0}"></td>
-      <td class="right"><input name="seng" type="number" min="0" step="0.01" value="${prefill.seng||0}"></td>
-      <td class="right mono" data-erpct>0.00</td>
-      <td class="right mono" data-srm>0.000</td>
-      <td class="right mono" data-score>0</td>
-      <td><span class="pill good" data-status>Ok</span></td>
-      <td><button class="btn ghost" data-del>Xóa</button></td>`; els.table.appendChild(tr); tr.querySelectorAll('input').forEach(i=>i.addEventListener('input', recalc)); tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); }); recalc(); }
+    // events
+    document.getElementById('btnEN').onclick = ()=>{ LANG='en'; renderStatic(); buildThead(); recalc(); };
+    document.getElementById('btnVI').onclick = ()=>{ LANG='vi'; renderStatic(); buildThead(); recalc(); };
+    document.getElementById('followers').addEventListener('input', recalc);
+    document.getElementById('smartFollowers').addEventListener('input', recalc);
+    document.getElementById('posts').addEventListener('input', recalc);
+    document.getElementById('addRow').addEventListener('click', ()=>addRow());
+    document.getElementById('calcAll').addEventListener('click', recalc);
+    document.getElementById('clearAll').addEventListener('click', ()=>{ document.querySelector('#linksTable tbody').innerHTML=''; recalc(); });
 
-    els.followers.addEventListener('input', recalc); els.smartFollowers.addEventListener('input', recalc); els.posts.addEventListener('input', recalc);
-    els.addRow.addEventListener('click', ()=>addRow()); els.calcAll.addEventListener('click', recalc); els.clearAll.addEventListener('click', ()=>{ els.table.innerHTML=''; recalc(); });
-
-    addRow(); updateRank(0);
+    // init
+    renderStatic(); buildThead(); addRow();
+    recalc();
   </script>
 </body>
 </html>
