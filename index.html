@@ -3,72 +3,312 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Leaderboard Calculator</title>
+  <title>Bảng tính điểm social</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #11161d;
+      --muted: #9fb0c3;
+      --text: #e6eef7;
+      --accent: #6ad1ff;
+      --good: #38d39f;
+      --warn: #ffd166;
+      --bad: #ff6b6b;
+      --border: #1f2a36;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box }
+    body { margin: 0; background: linear-gradient(180deg, #0b0f14, #06090c); color: var(--text); font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial; padding: 24px; letter-spacing: .2px; }
+    h1, h2, h3 { margin: 0 0 12px }
+    h1 { font-size: 24px }
+    h2 { font-size: 18px; color: var(--muted) }
+    .wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 16px }
+    .grid { display: grid; gap: 16px }
+    .two { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .three { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px }
+    .muted { color: var(--muted) }
+    .row { display: grid; grid-template-columns: 180px 1fr; gap: 10px; align-items: center; margin: 10px 0 }
+    label { font-weight: 600 }
+    input[type="number"], input[type="text"], textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: #0c1016; color: var(--text); outline: none; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    input[type="number"]:focus, input[type="text"]:focus, textarea:focus { border-color: var(--accent) }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: #0e141b; color: var(--text); padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600 }
+    .btn:hover { background: #131b25 }
+    .btn.primary { background: linear-gradient(135deg, #39a0ff, #6ad1ff); color: #001827; border: none }
+    .btn.primary:hover { filter: brightness(1.03) }
+    .btn.ghost { background: transparent }
+
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; border: 1px solid var(--border) }
+    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border) }
+    th { background: #0f141c; color: var(--muted); font-weight: 700; position: sticky; top: 0; z-index: 1 }
+    tr:hover td { background: rgba(255,255,255,.02) }
+    td input { width: 100% }
+
+    .pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700 }
+    .pill.good { background: rgba(56,211,159,.12); color: var(--good) }
+    .pill.warn { background: rgba(255,209,102,.12); color: var(--warn) }
+    .pill.bad  { background: rgba(255,107,107,.12); color: var(--bad) }
+
+    .right { text-align: right }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Liberation Mono, monospace }
+
+    .footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 8px }
+
+    @media (max-width: 880px) { .two { grid-template-columns: 1fr } .row { grid-template-columns: 1fr } }
+  </style>
 </head>
 <body>
-  <h1>Leaderboard Calculator</h1>
- <!-- thêm vào ngay dưới nút Tính điểm -->
-<div class="flex gap-3 pt-2">
-  <button type="button" id="loginBtn" class="rounded-xl px-4 py-2 bg-black text-white">Đăng nhập X</button>
-  <button type="button" id="fetchBtn" class="rounded-xl px-4 py-2 bg-neutral-700 text-white">Lấy bài có @Zama_FHE và #ZamaCreatorProgram</button>
-</div>
+  <div class="wrap">
+    <header class="grid two">
+      <div class="card">
+        <h1>Luật tính điểm</h1>
+        <div class="muted">Nhập thông số chung, thêm các link và xem điểm chi tiết, tổng điểm</div>
+      </div>
+      <div class="card grid three">
+        <div>
+          <div class="muted">Bài đăng</div>
+          <div id="postCountStat" class="mono" style="font-size:22px">0</div>
+        </div>
+        <div>
+          <div class="muted">Tổng điểm</div>
+          <div id="totalScore" class="mono" style="font-size:22px">0</div>
+        </div>
+        <div>
+          <div class="muted">xếp hạng so với ss2</div>
+          <div id="rankVsSS2" class="mono" style="font-size:22px">chưa nạp ss2</div>
+        </div>
+      </div>
+    </header>
 
-<!-- bảng kết quả import -->
-<section class="mt-6">
-  <h2 class="text-xl font-semibold">Bài đã lấy</h2>
-  <div class="text-sm text-slate-500">Từ ngày đầu tháng hiện tại</div>
-  <div class="mt-3 overflow-x-auto">
-    <table id="tweetsTable" class="min-w-full text-sm">
-      <thead><tr class="text-left">
-        <th class="pr-4">ngày</th>
-        <th class="pr-4">id</th>
-        <th class="pr-4">impr</th>
-        <th class="pr-4">like</th>
-        <th class="pr-4">rt</th>
-        <th class="pr-4">quote</th>
-        <th class="pr-4">reply</th>
-        <th class="pr-4">điểm</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table>
+    <section class="card">
+      <h2>Thông số chung</h2>
+      <div class="row">
+        <label for="followers">Followers</label>
+        <input id="followers" type="number" min="0" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label for="smartFollowers">Smart followers</label>
+        <input id="smartFollowers" type="number" min="0" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label for="posts">Số bài đăng</label>
+        <input id="posts" type="number" min="0" step="1" value="0" />
+      </div>
+      <div class="row">
+        <label>Hệ số chung</label>
+        <div class="muted mono" id="derivedGlobals">SF 0, postMult 1.00</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div style="display:flex; gap:8px; justify-content:space-between; align-items:center; margin-bottom:8px">
+        <h2>Danh sách link</h2>
+        <div style="display:flex; gap:8px">
+          <button id="addRow" class="btn">Thêm link</button>
+          <button id="calcAll" class="btn primary">Tính toàn bộ</button>
+          <button id="clearAll" class="btn ghost">Xóa tất cả</button>
+        </div>
+      </div>
+      <div style="overflow:auto">
+        <table id="linksTable">
+          <thead>
+            <tr>
+              <th style="min-width:180px">Link</th>
+              <th class="right">Impr</th>
+              <th class="right">Likes</th>
+              <th class="right">RT</th>
+              <th class="right">Quotes</th>
+              <th class="right">Smart eng</th>
+              <th class="right">ER %</th>
+              <th class="right">SRM</th>
+              <th class="right">Score</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <th colspan="7" class="right">Tổng hợp đủ điều kiện</th>
+              <th class="right" id="sumScore" colspan="2">0</th>
+              <th colspan="2"></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>So với Season 2</h2>
+      <div class="muted" style="margin-bottom:8px">Dán dữ liệu bảng ss2 vào đây rồi bấm nạp. Hệ thống sẽ tự bắt các số điểm ở cột SCORE và ước tính xếp hạng của tổng điểm hiện tại.</div>
+      <div class="row">
+        <label for="ss2data">Dán dữ liệu ss2</label>
+        <textarea id="ss2data" rows="6" placeholder="Dán toàn bộ bảng ss2 vào đây..."></textarea>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center">
+        <button id="loadSS2" class="btn">Nạp dữ liệu ss2</button>
+        <div class="muted">Đã nạp: <span class="mono" id="ss2count">0</span> điểm</div>
+      </div>
+      <div id="ss2stats" class="muted" style="margin-top:8px"></div>
+    </section>
+
+    <div class="footer">Không gửi dữ liệu ra ngoài</div>
   </div>
-</section>
-<script>
-// helper gọi api serverless
-async function api(path) {
-  const r = await fetch(path, { credentials: 'include' });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-$('loginBtn').addEventListener('click', () => {
-  location.href = '/api/auth/start';
-});
-$('fetchBtn').addEventListener('click', async () => {
-  const data = await api('/api/x/my-tagged');
-  const tbody = document.querySelector('#tweetsTable tbody');
-  tbody.innerHTML = '';
-  for (const t of data.tweets) {
-    // ánh xạ sang form, tính điểm từng bài
-    $('impressions').value = t.metrics.impression_count ?? 0;
-    $('likes').value = t.metrics.like_count ?? 0;
-    $('retweets').value = t.metrics.retweet_count ?? 0;
-    $('quotes').value = t.metrics.quote_count ?? 0;
-    // giữ followers, smart_* và posts theo người dùng tự nhập
-    const out = calcAndRender();
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="pr-4">${new Date(t.created_at).toLocaleString()}</td>
-      <td class="pr-4"><a class="underline" target="_blank" href="https://x.com/${data.me.username}/status/${t.id}">${t.id}</a></td>
-      <td class="pr-4">${t.metrics.impression_count ?? 0}</td>
-      <td class="pr-4">${t.metrics.like_count}</td>
-      <td class="pr-4">${t.metrics.retweet_count}</td>
-      <td class="pr-4">${t.metrics.quote_count}</td>
-      <td class="pr-4">${t.metrics.reply_count}</td>
-      <td class="pr-4 font-mono">${new Intl.NumberFormat('vi-VN').format(out.finalScore)}</td>`;
-    tbody.appendChild(tr);
-  }
-});
-</script>
 
+  <script>
+    const els = {
+      followers: document.getElementById('followers'),
+      smartFollowers: document.getElementById('smartFollowers'),
+      posts: document.getElementById('posts'),
+      derivedGlobals: document.getElementById('derivedGlobals'),
+      addRow: document.getElementById('addRow'),
+      calcAll: document.getElementById('calcAll'),
+      clearAll: document.getElementById('clearAll'),
+      table: document.getElementById('linksTable').querySelector('tbody'),
+      sumScore: document.getElementById('sumScore'),
+      totalScore: document.getElementById('totalScore'),
+      postCountStat: document.getElementById('postCountStat'),
+      rankVsSS2: document.getElementById('rankVsSS2'),
+      ss2data: document.getElementById('ss2data'),
+      loadSS2: document.getElementById('loadSS2'),
+      ss2count: document.getElementById('ss2count'),
+      ss2stats: document.getElementById('ss2stats'),
+    };
+
+    let SS2 = [];
+
+    function fmt(x, d=2) { if (!isFinite(x)) return '0'; return Number(x).toLocaleString('vi-VN', { maximumFractionDigits: d, minimumFractionDigits: 0 }); }
+
+    function globals() {
+      const followers = Math.max(0, +els.followers.value || 0);
+      const smartFollowers = Math.max(0, +els.smartFollowers.value || 0);
+      const posts = Math.max(0, +els.posts.value || 0);
+      const SF = Math.min(Math.log10(smartFollowers + 1), 3.0);
+      const postMult = 1 + 0.02 * Math.min(posts, 20);
+      els.derivedGlobals.textContent = `SF ${SF.toFixed(3)}, postMult ${postMult.toFixed(2)}`;
+      els.postCountStat.textContent = fmt(posts);
+      return { followers, smartFollowers, posts, SF, postMult };
+    }
+
+    function computeRow(row, g) {
+      const read = name => { const el = row.querySelector(`[name=${name}]`); return +el.value || 0; };
+      const impressions = Math.max(0, read('impressions'));
+      const likes = Math.max(0, read('likes'));
+      const rts = Math.max(0, read('retweets'));
+      const quotes = Math.max(0, read('quotes'));
+      const sengIn = Math.max(0, read('seng'));
+
+      const SRM = Math.min(1, impressions / 100000);
+      const qW = 4 + 2 * SRM;
+      const ENG = likes + 3 * rts + qW * quotes;
+      const ERpct = impressions > 0 ? (likes + rts + quotes) / impressions * 100 : 0;
+      const EngObs = Math.max(ENG, (ERpct / 100) * impressions);
+      const ER_cap = 0.01 + 0.04 * SRM;
+      const EffEng = Math.min(EngObs, impressions * ER_cap);
+      const Clamp = EngObs > 0 ? EffEng / EngObs : 0;
+      const SENG = Math.min(sengIn, 0.5 * EffEng);
+      const QE = Math.min(Math.log(1 + impressions / Math.max(g.followers, 1)), 2.0) * SRM;
+      const IMP = Math.sqrt(impressions);
+      const erMult = Math.min(0.90 + 2 * Math.min(ERpct / 100, 0.05), 1.0);
+      const engageBlock = (((ENG * 0.7) * Clamp) + (SENG * 150)) * Math.pow(SRM, 1.5);
+      const baseScore = (g.SF * 500) + (IMP * 10) + engageBlock + (QE * 120);
+      let finalScore = baseScore * erMult * g.postMult;
+
+      const ERobs = impressions > 0 ? (EngObs / impressions) * 100 : 0;
+      let status = '';
+      let eligible = true;
+      if (ERobs > 20) { finalScore = 0; status = 'DQ ER quan sát > 20%'; eligible = false; }
+      if (ERpct > 10 && impressions < 50000) { finalScore *= 0.30; status = status ? status + ' + phạt 0.30' : 'Phạt 0.30'; }
+      if (g.posts < 2 || impressions <= 0) { eligible = false; status = status ? status + ' + không đủ điều kiện' : 'Không đủ điều kiện'; }
+
+      row.querySelector('[data-erpct]').textContent = ERpct ? ERpct.toFixed(2) : '0.00';
+      row.querySelector('[data-srm]').textContent = SRM.toFixed(3);
+      row.querySelector('[data-score]').textContent = fmt(finalScore, 2);
+      const badge = row.querySelector('[data-status]');
+      badge.textContent = status || 'Ok';
+      badge.className = 'pill ' + (status.includes('DQ') ? 'bad' : status ? 'warn' : 'good');
+
+      return { finalScore, eligible };
+    }
+
+    function recalc() {
+      const g = globals();
+      let sumScore = 0, totalScore = 0;
+      els.table.querySelectorAll('tr').forEach(row => {
+        const { finalScore, eligible } = computeRow(row, g);
+        totalScore += finalScore;
+        if (eligible) { sumScore += finalScore; }
+      });
+      els.sumScore.textContent = fmt(sumScore, 2);
+      els.totalScore.textContent = fmt(totalScore, 2);
+      updateRank(sumScore);
+    }
+
+    function addRow(prefill={}) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input name="url" type="text" placeholder="https://..." value="${prefill.url||''}"></td>
+        <td class="right"><input name="impressions" type="number" min="0" step="1" value="${prefill.impressions||0}"></td>
+        <td class="right"><input name="likes" type="number" min="0" step="1" value="${prefill.likes||0}"></td>
+        <td class="right"><input name="retweets" type="number" min="0" step="1" value="${prefill.retweets||0}"></td>
+        <td class="right"><input name="quotes" type="number" min="0" step="1" value="${prefill.quotes||0}"></td>
+        <td class="right"><input name="seng" type="number" min="0" step="0.01" value="${prefill.seng||0}"></td>
+        <td class="right mono" data-erpct>0.00</td>
+        <td class="right mono" data-srm>0.000</td>
+        <td class="right mono" data-score>0</td>
+        <td><span class="pill good" data-status>Ok</span></td>
+        <td><button class="btn ghost" data-del>Xóa</button></td>
+      `;
+      els.table.appendChild(tr);
+      tr.querySelectorAll('input').forEach(i => i.addEventListener('input', recalc));
+      tr.querySelector('[data-del]').addEventListener('click', () => { tr.remove(); recalc(); });
+      recalc();
+    }
+
+    function parseSS2(raw) {
+      const scores = [];
+      const lines = (raw || '').split(/\r?\n/);
+      for (const line of lines) {
+        const m = line.match(/^\s*(\d{3,})\s+\d+(?:[\.,]\d+)?\b/);
+        if (m) { scores.push(+m[1]); continue; }
+      }
+      if (scores.length < 50) {
+        const reg = /(^|\s)(\d{3,})(?=\s+ZAMA|\s+\d+[\.,]\d+\b)/g;
+        let mm; while ((mm = reg.exec(raw)) !== null) { scores.push(+mm[2]); }
+      }
+      return scores.sort((a,b) => b - a);
+    }
+
+    function updateRank(my) {
+      if (!SS2.length) { els.rankVsSS2.textContent = 'chưa nạp ss2'; els.ss2stats.textContent=''; return; }
+      const better = SS2.filter(s => s > my).length;
+      const rank = better + 1;
+      const within = rank <= SS2.length ? `#${rank}/${SS2.length}` : `ngoài Top ${SS2.length}`;
+      els.rankVsSS2.textContent = within;
+      const getAt = k => SS2[Math.min(Math.max(k-1, 0), SS2.length-1)];
+      const p100 = getAt(100), p200 = getAt(200), p300 = getAt(300), p500 = getAt(500);
+      const nearAbove = SS2.find(s => s >= my) || SS2[SS2.length-1];
+      const nearBelow = [...SS2].reverse().find(s => s <= my) || SS2[0];
+      els.ss2stats.innerHTML = `
+        <div>Điểm của bạn: <b class="mono">${fmt(my,2)}</b></div>
+        <div>Ngưỡng Top 100: <span class="mono">${fmt(p100)}</span> | Top 200: <span class="mono">${fmt(p200)}</span> | Top 300: <span class="mono">${fmt(p300)}</span> | Top 500: <span class="mono">${fmt(p500)}</span></div>
+        <div>Gần nhất phía trên: <span class="mono">${fmt(nearAbove)}</span> | phía dưới: <span class="mono">${fmt(nearBelow)}</span></div>
+      `;
+    }
+
+    els.followers.addEventListener('input', recalc);
+    els.smartFollowers.addEventListener('input', recalc);
+    els.posts.addEventListener('input', recalc);
+    els.addRow.addEventListener('click', () => addRow());
+    els.calcAll.addEventListener('click', recalc);
+    els.clearAll.addEventListener('click', () => { els.table.innerHTML = ''; recalc(); });
+
+    els.loadSS2.addEventListener('click', () => { SS2 = parseSS2(els.ss2data.value); els.ss2count.textContent = SS2.length; recalc(); });
+
+    addRow();
+  </script>
 </body>
 </html>
