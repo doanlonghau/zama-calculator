@@ -33,7 +33,7 @@
   table{width:100%; border-collapse:collapse; font-size:.95rem; table-layout:fixed}
   th,td{border-bottom:1px dashed rgba(244,194,13,.25); padding:8px 6px; text-align:left; vertical-align:middle}
   th{color:#ffe27a; position:sticky; top:0; background:rgba(15,15,15,.8); backdrop-filter: blur(6px)}
-  #linksTable th:nth-child(1), #linksTable td:nth-child(1){width:25%}
+  #linksTable th:nth-child(1), #linksTable td:nth-child(1){width:36%}
   #linksTable th:nth-child(2), #linksTable td:nth-child(2){width:10%}
   #linksTable th:nth-child(3), #linksTable td:nth-child(3){width:9%}
   #linksTable th:nth-child(4), #linksTable td:nth-child(4){width:9%}
@@ -42,28 +42,6 @@
   #linksTable th:nth-child(7), #linksTable td:nth-child(7){width:8%}
   #linksTable th:nth-child(8), #linksTable td:nth-child(8){width:7%}
   #linksTable th:nth-child(9), #linksTable td:nth-child(9){width:4%}
-  /* input trong bảng chiếm đủ ô và không tràn viền */
-#linksTable input,
-#linksTable select {
-  width: 100%;
-  box-sizing: border-box;
-  display: block;
-  min-height: 34px;       /* cho dễ bấm */
-  line-height: 1.2;
-}
-
-/* giữ khoảng cách giữa nội dung và viền ô một chút thoáng hơn */
-#linksTable td { padding: 10px 8px; }
-
-/* tùy chọn ẩn nút tăng giảm của input number nếu thấy chật */
-#linksTable input[type=number]::-webkit-outer-spin-button,
-#linksTable input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-#linksTable input[type=number] {
-  -moz-appearance: textfield;
-}
   .mono{font-family:var(--mono)}
   .pill{display:inline-block; padding:4px 8px; border-radius:999px; font-size:.8rem; border:1px solid rgba(255,255,255,.1)}
   .pill.good{background:rgba(106,211,106,.12); border-color:rgba(106,211,106,.4)}
@@ -76,10 +54,23 @@
   .table-wrap{overflow:auto; max-height:calc(100vh - 420px); border:1px solid rgba(244,194,13,.25); border-radius:10px}
   @media(max-width:900px){ .table-wrap{max-height:unset} }
   .hide{display:none !important}
-  /* bảng gates */
   .gates{width:auto; border-collapse:separate; border-spacing:0; margin-top:8px}
   .gates th,.gates td{border:1px solid rgba(244,194,13,.35); padding:6px 10px; white-space:nowrap}
   .gates th{background:rgba(244,194,13,.08); color:#ffe27a; position:static}
+
+  /* sửa input trong bảng cho đỡ dính viền */
+  #linksTable input,
+  #linksTable select{
+    width:100%;
+    box-sizing:border-box;
+    display:block;
+    min-height:34px;
+    line-height:1.2;
+  }
+  #linksTable td{padding:10px 8px}
+  #linksTable input[type=number]::-webkit-outer-spin-button,
+  #linksTable input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0 }
+  #linksTable input[type=number]{ -moz-appearance:textfield }
 </style>
 </head>
 <body>
@@ -164,7 +155,6 @@
             <button id="xLogoutBtn" class="btn" style="display:none">Sign out</button>
             <span id="xAuthStatus" class="muted">Not connected</span>
           </div>
-          <!-- Ẩn label và hint theo yêu cầu nhưng vẫn giữ input để code hoạt động -->
           <div class="row hide">
             <label id="xEstimateLabel" for="xEstimate">hidden</label>
             <input id="xEstimate" type="number" min="0.1" max="20" step="0.1" value="2.5" />
@@ -175,7 +165,6 @@
           </div>
           <div class="muted hide" id="xApiHint">hidden</div>
         </div>
-        <!-- Ẩn hoàn toàn phần scopes và trạng thái -->
         <div class="hide">
           <div class="muted" style="margin-bottom:6px" id="xScopeTitle">hidden</div>
           <ul id="xScopeList" class="muted" style="margin:0 0 8px 18px"></ul>
@@ -384,25 +373,18 @@
     return SS2.n+1;
   }
 
-  $('#addRow').addEventListener('click', ()=>{ addRow(); recalc(); });
-  $('#calcAll').addEventListener('click', recalc);
-  $('#clearAll').addEventListener('click', ()=>{ $('#linksTable tbody').innerHTML=''; recalc(); });
-  ['#followers','#smartFollowers','#posts'].forEach(s=> $(s).addEventListener('input', recalc));
-
-  function rowsFromObjects(list){ list.forEach(o=> addRow(o)); recalc(); }
-
-  // OAuth 2 PKCE helper
-  const b64url = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  async function sha256(str){ const enc = new TextEncoder().encode(str); return await crypto.subtle.digest('SHA-256', enc); }
-  function rnd(n=32){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
-
+  // cấu hình oauth đã tích hợp phần 2
   const OAUTH = {
     authorizeBase:'https://twitter.com/i/oauth2/authorize',
-    tokenProxy:'https://YOUR-WORKER.workers.dev/x/oauth/token',
-    clientId:'YOUR_X_CLIENT_ID',
-    redirectUri: location.origin + location.pathname
+    tokenProxy:'https://zama-oauth-proxy.doanlonghau.workers.dev',
+    clientId:'wyrAuFlOTIDeC3RpbYWPXgtMc', // thay bằng OAuth 2.0 Client ID nếu khác
+    redirectUri:'https://zama-calculator-rho.vercel.app/'
   };
   const OAUTH_SCOPES = ['tweet.read','users.read','offline.access'];
+
+  function b64url(buf){ return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+  async function sha256(str){ const enc = new TextEncoder().encode(str); return await crypto.subtle.digest('SHA-256', enc); }
+  function rnd(n=32){ const a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
 
   let X_ACCESS_TOKEN=null, X_REFRESH_TOKEN=null, X_HANDLE=null, X_NEXT_TOKEN=null;
 
@@ -410,39 +392,106 @@
     $('#xAuthStatus').textContent = I18N[LANG].xAuthBusy;
     const verifier = rnd(48); const challenge = b64url(await sha256(verifier)); const state=rnd(24);
     sessionStorage.setItem('x_pkce_verifier', verifier); sessionStorage.setItem('x_pkce_state', state);
-    const p = new URLSearchParams({ response_type:'code', client_id:OAUTH.clientId, redirect_uri:OAUTH.redirectUri, scope:OAUTH_SCOPES.join(' '), state, code_challenge:challenge, code_challenge_method:'S256' });
+    const p = new URLSearchParams({
+      response_type:'code',
+      client_id:OAUTH.clientId,
+      redirect_uri:OAUTH.redirectUri,
+      scope:OAUTH_SCOPES.join(' '),
+      state,
+      code_challenge:challenge,
+      code_challenge_method:'S256'
+    });
     location.href = `${OAUTH.authorizeBase}?${p.toString()}`;
   }
+
   async function xHandleCallback(){
-    const url = new URL(location.href); const code=url.searchParams.get('code'); const state=url.searchParams.get('state'); if(!code) return;
-    const expect = sessionStorage.getItem('x_pkce_state'); const verifier = sessionStorage.getItem('x_pkce_verifier');
-    if(!state || state!==expect){ $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; history.replaceState({}, document.title, location.pathname); return; }
+    const url = new URL(location.href);
+    const code=url.searchParams.get('code');
+    const state=url.searchParams.get('state');
+    if(!code) return;
+
+    const expect = sessionStorage.getItem('x_pkce_state');
+    const verifier = sessionStorage.getItem('x_pkce_verifier');
+    if(!state || state!==expect){
+      $('#xAuthStatus').textContent = I18N[LANG].xAuthFail;
+      history.replaceState({}, document.title, location.pathname);
+      return;
+    }
     try{
-      const r = await fetch(OAUTH.tokenProxy, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code, code_verifier:verifier, client_id:OAUTH.clientId, redirect_uri:OAUTH.redirectUri }) });
-      if(!r.ok){ $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; history.replaceState({}, document.title, location.pathname); return; }
-      const tok = await r.json(); X_ACCESS_TOKEN = tok.access_token||null; X_REFRESH_TOKEN = tok.refresh_token||null;
-      const me = await fetch('https://api.twitter.com/2/users/me?user.fields=username', { headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` } });
-      if(me.ok){ const js = await me.json(); X_HANDLE = '@' + (js.data?.username||'x'); $('#xAuthStatus').textContent = I18N[LANG].xAuthOk(X_HANDLE); $('#xLoginBtn').style.display='none'; $('#xLogoutBtn').style.display=''; $('#xFetchBtn').disabled=false; }
-      else { $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; }
-    }catch(e){ $('#xAuthStatus').textContent = I18N[LANG].xAuthFail; }
+      const r = await fetch(OAUTH.tokenProxy, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ code, code_verifier:verifier, redirect_uri:OAUTH.redirectUri })
+      });
+      if(!r.ok){
+        $('#xAuthStatus').textContent = I18N[LANG].xAuthFail;
+        history.replaceState({}, document.title, location.pathname);
+        return;
+      }
+      const tok = await r.json();
+      X_ACCESS_TOKEN = tok.access_token||null;
+      X_REFRESH_TOKEN = tok.refresh_token||null;
+
+      const me = await fetch('https://api.twitter.com/2/users/me?user.fields=username', {
+        headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` }
+      });
+      if(me.ok){
+        const js = await me.json();
+        X_HANDLE = '@' + (js.data?.username||'x');
+        $('#xAuthStatus').textContent = I18N[LANG].xAuthOk(X_HANDLE);
+        $('#xLoginBtn').style.display='none';
+        $('#xLogoutBtn').style.display='';
+        $('#xFetchBtn').disabled=false;
+      }else{
+        $('#xAuthStatus').textContent = I18N[LANG].xAuthFail;
+      }
+    }catch(e){
+      $('#xAuthStatus').textContent = I18N[LANG].xAuthFail;
+    }
     history.replaceState({}, document.title, location.pathname);
   }
-  function xLogout(){ X_ACCESS_TOKEN=null; X_REFRESH_TOKEN=null; X_HANDLE=null; $('#xAuthStatus').textContent=I18N[LANG].xAuthReady; $('#xLoginBtn').style.display=''; $('#xLogoutBtn').style.display='none'; $('#xFetchBtn').disabled=true; $('#xMoreBtn').disabled=true; }
+
+  function xLogout(){
+    X_ACCESS_TOKEN=null; X_REFRESH_TOKEN=null; X_HANDLE=null;
+    $('#xAuthStatus').textContent=I18N[LANG].xAuthReady;
+    $('#xLoginBtn').style.display=''; $('#xLogoutBtn').style.display='none';
+    $('#xFetchBtn').disabled=true; $('#xMoreBtn').disabled=true;
+  }
 
   async function xFetch(query, nextToken){
     const estERInput = $('#xEstimate');
     const estER = estERInput ? Math.max(0.1, +estERInput.value || 2.5) : 2.5;
-    const status=$('#xApiStatus'); // có thể null do bị ẩn
+    const status=$('#xApiStatus');
     if(!X_ACCESS_TOKEN){ if(status) status.textContent = I18N[LANG].xAuthReady; return; }
-    const params = new URLSearchParams({ query, 'tweet.fields':'public_metrics,created_at,entities', expansions:'author_id', 'user.fields':'username,public_metrics', max_results:'50' }); if(nextToken) params.set('next_token', nextToken);
+    const params = new URLSearchParams({
+      query,
+      'tweet.fields':'public_metrics,created_at,entities',
+      expansions:'author_id',
+      'user.fields':'username,public_metrics',
+      max_results:'50'
+    });
+    if(nextToken) params.set('next_token', nextToken);
     try{
-      const resp = await fetch('https://api.twitter.com/2/tweets/search/recent?' + params.toString(), { headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` } });
+      const resp = await fetch('https://api.twitter.com/2/tweets/search/recent?' + params.toString(), {
+        headers:{ Authorization:`Bearer ${X_ACCESS_TOKEN}` }
+      });
       if(!resp.ok){ return; }
-      const data = await resp.json(); const usersById = new Map((data.includes?.users||[]).map(u=>[u.id,u]));
-      const items = (data.data||[]).map(tw=>{ const u=usersById.get(tw.author_id); const username=u?.username||'x'; const url=`https://x.com/${username}/status/${tw.id}`; const pm=tw.public_metrics||{}; const likes=pm.like_count||0, retweets=pm.retweet_count||0, quotes=pm.quote_count||0; const engagements = likes+retweets+quotes; const impressions = engagements>0 ? Math.round(engagements/(estER/100)) : 0; return { url, impressions, likes, retweets, quotes }; });
+      const data = await resp.json();
+      const usersById = new Map((data.includes?.users||[]).map(u=>[u.id,u]));
+      const items = (data.data||[]).map(tw=>{
+        const u=usersById.get(tw.author_id);
+        const username=u?.username||'x';
+        const url=`https://x.com/${username}/status/${tw.id}`;
+        const pm=tw.public_metrics||{};
+        const likes=pm.like_count||0, retweets=pm.retweet_count||0, quotes=pm.quote_count||0;
+        const engagements = likes+retweets+quotes;
+        const impressions = engagements>0 ? Math.round(engagements/(estER/100)) : 0;
+        return { url, impressions, likes, retweets, quotes };
+      });
       if(items.length) rowsFromObjects(items);
-      X_NEXT_TOKEN = data.meta?.next_token||null; $('#xMoreBtn').disabled = !X_NEXT_TOKEN;
-    }catch(e){ /* bỏ qua lỗi hiển thị vì đã ẩn status */ }
+      X_NEXT_TOKEN = data.meta?.next_token||null;
+      $('#xMoreBtn').disabled = !X_NEXT_TOKEN;
+    }catch(e){ }
   }
 
   $('#xLoginBtn').addEventListener('click', xStartLogin);
